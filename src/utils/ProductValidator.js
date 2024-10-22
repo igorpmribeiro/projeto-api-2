@@ -3,27 +3,27 @@ class ProductValidator {
     const errors = [];
 
     if (!data.name || typeof data.name !== 'string') {
-      errors.push('Nome é obrigatório e deve ser uma string');
+      errors.push('Name is required and must be a string');
     }
 
-    if (!data.price || typeof data.price !== 'number' || data.price <= 0) {
-      errors.push('Preço é obrigatório e deve ser um número positivo');
+    if (typeof data.price !== 'number' || data.price <= 0) {
+      errors.push('Price must be a number greater than 0');
     }
 
-    if (!Number.isInteger(data.quantity) || data.quantity < 0) {
-      errors.push('Quantidade é obrigatória e deve ser um número inteiro não negativo');
+    if (typeof data.quantity !== 'number' || data.quantity < 0) {
+      errors.push('Quantity must be a number');
     }
 
     if (data.description && typeof data.description !== 'string') {
-      errors.push('Descrição deve ser uma string');
+      errors.push('Description must be a string');
     }
 
     if (data.categories && !Array.isArray(data.categories)) {
-      errors.push('Categorias devem ser um array');
+      errors.push('Categories must be an array');
     }
 
     if (data.codref && typeof data.codref !== 'string') {
-      errors.push('Código de referência é obrigatório e deve ser uma string');
+      errors.push('SKU must be a string');
     }
 
     return {
