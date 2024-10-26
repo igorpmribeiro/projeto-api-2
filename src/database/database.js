@@ -21,7 +21,7 @@ class Database {
 
 		this.db.run(`CREATE TABLE IF NOT EXISTS attribute_options (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        attribute_id INTEGER NOT NULL,
+        attribute_id INTEGER,
         type TEXT NOT NULL,
         name TEXT NOT NULL,
         value TEXT NOT NULL,

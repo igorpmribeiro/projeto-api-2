@@ -13,7 +13,10 @@ class AttributeController {
 			}
 
 			const attributeId = await newAttribute.create(req.body);
-			res.status(201).json({ id: attributeId });
+			res.status(201).json({
+				message: 'Attribute created successfully',
+				id: attributeId,
+			});
 		} catch (error) {
 			res.status(500).json({ error: error.message });
 		}

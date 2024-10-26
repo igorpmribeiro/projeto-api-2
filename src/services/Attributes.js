@@ -11,11 +11,18 @@ class AttributeService {
 			throw new Error('Invalid attribute data');
 		}
 
-		const newAttribute = new Attribute(
-			null,
-			attribute.groupName,
-			attribute.options.map((option) => new AttributeOption(null, option)),
-		);
+		// Corrigindo a criação do Attribute
+		const newAttribute = new Attribute({
+			groupName: attribute.groupName,
+			options: attribute.options.map((option) => ({
+				type: option.type,
+				name: option.name,
+				value: option.value,
+				optionSort: option.optionSort,
+				valueSort: option.valueSort,
+			})),
+		});
+
 		return this.attributeRepository.create(newAttribute);
 	}
 }
