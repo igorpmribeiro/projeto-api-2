@@ -1,8 +1,8 @@
 import express from 'express';
 import Database from './database/database.js';
-import { productRouter } from './routes/ProductRoutes.js';
-import { categoryRouter } from './routes/CategoryRoutes.js';
-import { attributeRouter } from './routes/AttributeRoutes.js';
+import { productRouter } from './routes/Products.js';
+import { categoryRouter } from './routes/Categories.js';
+import { attributeRouter } from './routes/Attributes.js';
 
 const app = express();
 
@@ -16,5 +16,5 @@ const db = new Database();
 db.init();
 
 app.listen(3000, () => {
-  console.log('Server is running on port 3000');
-} );
+	console.log('Server is running on port 3000');
+});
