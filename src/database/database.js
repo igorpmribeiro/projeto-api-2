@@ -15,19 +15,27 @@ class Database {
       categories NUMBER DEFAULT 0,
       codref TEXT DEFAULT NULL)`);
 
+		this.db.run(`CREATE TABLE IF NOT EXISTS categories 
+         (id INTEGER PRIMARY KEY AUTOINCREMENT,
+         name TEXT NOT NULL,
+         title TEXT,
+         subtitle TEXT,
+         discount NUMBER DEFAULT 0,
+         hidden BOOLEAN DEFAULT FALSE)`);
+
 		this.db.run(`CREATE TABLE IF NOT EXISTS attributes (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       group_name TEXT NOT NULL)`);
 
 		this.db.run(`CREATE TABLE IF NOT EXISTS attribute_options (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        attribute_id INTEGER,
-        type TEXT NOT NULL,
-        name TEXT NOT NULL,
-        value TEXT NOT NULL,
-        optionSort NUMBER,
-        valueSort NUMBER,
-        FOREIGN KEY (attribute_id) REFERENCES attributes(id))`);
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      attribute_id INTEGER,
+      type TEXT NOT NULL,
+      name TEXT NOT NULL,
+      value TEXT NOT NULL,
+      optionSort NUMBER,
+      valueSort NUMBER,
+      FOREIGN KEY (attribute_id) REFERENCES attributes(id))`);
 	}
 }
 

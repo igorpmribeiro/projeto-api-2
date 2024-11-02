@@ -18,6 +18,9 @@ class ProductService {
 		);
 		return this.productRepository.create(newProduct);
 	}
+	async findById(id) {
+		return await this.productRepository.findById(id);
+	}
 }
 
 export { ProductService };
