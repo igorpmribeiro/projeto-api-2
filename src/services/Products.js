@@ -21,6 +21,9 @@ class ProductService {
 	async findById(id) {
 		return await this.productRepository.findById(id);
 	}
+	async listAllProducts() {
+		return await this.productRepository.listAllProducts();
+	}
 }
 
 export { ProductService };

@@ -6,6 +6,7 @@ const productRouter = Router();
 const productController = new ProductController();
 
 productRouter.post('/insert', productController.create);
+productRouter.get('/list', productController.listAllProducts);
 productRouter.get('/:id', productController.findById);
 
 export { productRouter };

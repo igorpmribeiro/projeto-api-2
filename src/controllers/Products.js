@@ -33,6 +33,15 @@ class ProductController {
 			res.status(500).json({ error: error.message });
 		}
 	}
+
+	async listAllProducts(req, res) {
+		try {
+			const products = await newProduct.listAllProducts();
+			res.json(products);
+		} catch (error) {
+			res.status(500).json({ error: error.message });
+		}
+	}
 }
 
 export { ProductController };
