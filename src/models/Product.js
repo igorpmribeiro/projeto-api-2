@@ -5,8 +5,8 @@ class Product {
 		this.price = price;
 		this.quantity = quantity;
 		this.description = description;
-		this.categories = categories;
 		this.codref = codref;
+		this.categories = categories;
 	}
 }
 

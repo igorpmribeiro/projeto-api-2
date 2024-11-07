@@ -12,8 +12,8 @@ class Database {
       price REAL DEFAULT 0,
       quantity NUMBER DEFAULT 0,
       description TEXT DEFAULT NULL,
-      categories NUMBER DEFAULT 0,
-      codref TEXT DEFAULT NULL)`);
+      codref TEXT DEFAULT NULL,
+      categories NUMBER DEFAULT 0)`);
 
 		this.db.run(`CREATE TABLE IF NOT EXISTS categories 
          (id INTEGER PRIMARY KEY AUTOINCREMENT,

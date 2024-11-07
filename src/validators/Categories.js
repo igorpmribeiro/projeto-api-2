@@ -1,5 +1,5 @@
 class CategoryValidator {
-	validateCategory(data) {
+	validate(data) {
 		const errors = [];
 
 		if (!data.name) {

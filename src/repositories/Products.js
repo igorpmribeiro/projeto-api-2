@@ -6,14 +6,14 @@ class ProductRepository {
 	async create(product) {
 		return new Promise((resolve, reject) => {
 			db.run(
-				'INSERT INTO products (name, price, quantity, description, categories, codref) VALUES (?, ?, ?, ?, ?, ?)',
+				'INSERT INTO products (name, price, quantity, description, codref, categories) VALUES (?, ?, ?, ?, ?, ?)',
 				[
 					product.name,
 					product.price,
 					product.quantity,
 					product.description,
-					product.categories,
 					product.codref,
+					JSON.stringify(product.categories),
 				],
 				(err) => {
 					if (err) {

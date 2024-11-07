@@ -13,8 +13,8 @@ class ProductService {
 			product.price,
 			product.quantity,
 			product.description,
-			product.categories,
 			product.codref,
+			product.categories,
 		);
 		return this.productRepository.create(newProduct);
 	}
