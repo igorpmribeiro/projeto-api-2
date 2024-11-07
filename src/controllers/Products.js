@@ -7,21 +7,20 @@ const newProduct = new ProductService();
 const validator = new ProductValidator();
 
 class ProductController {
-	async create(req, res) {
+	async create(req, res, next) {
 		try {
 			const validationResult = validator.validate(req.body);
 			if (!validationResult.isValid) {
 				return res.status(400).json({ errors: validationResult.errors });
 			}
 
-			const productId = await newProduct.create(req.body);
-			res.status(201).json({ id: productId });
+			res.status(201).json({ message: 'Produto criado com sucesso' });
 		} catch (error) {
-			res.status(500).json({ error: error.message });
+			next(error);
 		}
 	}
 
-	async findById(req, res) {
+	async findById(req, res, next) {
 		try {
 			const productId = await newProduct.findById(req.params.id);
 			if (!productId) {
@@ -30,7 +29,7 @@ class ProductController {
 
 			res.json(productId);
 		} catch (error) {
-			res.status(500).json({ error: error.message });
+			next(error);
 		}
 	}
 
