@@ -24,6 +24,9 @@ class ProductService {
 	async listAllProducts() {
 		return await this.productRepository.listAllProducts();
 	}
+	async updateProduct(id, product) {
+		return await this.productRepository.updateProduct(id, product);
+	}
 }
 
 export { ProductService };

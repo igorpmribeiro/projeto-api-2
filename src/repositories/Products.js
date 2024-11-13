@@ -49,6 +49,44 @@ class ProductRepository {
 			});
 		});
 	}
+
+	async updateProduct(id, product) {
+		const currentProduct = await this.findById(id);
+		if (!currentProduct) {
+			throw new Error('Product not found');
+		}
+
+		const updatedProduct = {
+			name: product.name ?? currentProduct.name,
+			price: product.price ?? currentProduct.price,
+			quantity: product.quantity ?? currentProduct.quantity,
+			description: product.description ?? currentProduct.description,
+			codref: product.codref ?? currentProduct.codref,
+			categories: product.categories ?? JSON.parse(currentProduct.categories),
+		};
+
+		return new Promise((resolve, reject) => {
+			db.run(
+				'UPDATE products SET name = ?, price = ?, quantity = ?, description = ?, codref = ?, categories = ? WHERE id = ?',
+				[
+					updatedProduct.name,
+					updatedProduct.price,
+					updatedProduct.quantity,
+					updatedProduct.description,
+					updatedProduct.codref,
+					JSON.stringify(updatedProduct.categories),
+					id,
+				],
+				(err) => {
+					if (err) {
+						reject(err);
+					} else {
+						resolve(updatedProduct);
+					}
+				},
+			);
+		});
+	}
 }
 
 export { ProductRepository };

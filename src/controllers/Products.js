@@ -39,6 +39,20 @@ class ProductController {
 			res.status(500).json({ error: error.message });
 		}
 	}
+
+	async updateProduct(req, res, next) {
+		try {
+			const validationResult = IProductValidator.validateUpdate(req.body);
+			if (!validationResult.isValid) {
+				return res.status(400).json({ errors: validationResult.errors });
+			}
+
+			await IProductService.updateProduct(req.params.id, req.body);
+			res.json({ message: 'Product updated' });
+		} catch (error) {
+			next(error);
+		}
+	}
 }
 
 export { ProductController };
