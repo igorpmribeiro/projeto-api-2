@@ -25,6 +25,14 @@ class AttributeService {
 
 		return this.attributeRepository.create(newAttribute);
 	}
+
+	async findGroups() {
+		return this.attributeRepository.findGroups();
+	}
+
+	async findGroupValues(id) {
+		return this.attributeRepository.findGroupValues(id);
+	}
 }
 
 export { AttributeService };

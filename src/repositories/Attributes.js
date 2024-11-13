@@ -60,6 +60,38 @@ class AttributeRepository {
 			});
 		});
 	}
+
+	findGroups() {
+		return new Promise((resolve, reject) => {
+			const db = this.db;
+
+			db.all('SELECT * FROM attributes', (err, rows) => {
+				if (err) {
+					console.error('Error selecting group names:', err);
+					return reject(err);
+				}
+				resolve(rows);
+			});
+		});
+	}
+
+	findGroupValues(groupId) {
+		return new Promise((resolve, reject) => {
+			const db = this.db;
+
+			db.all(
+				'SELECT id, type, name, value, optionSort, valueSort FROM attribute_options WHERE attribute_id = ?',
+				[groupId],
+				(err, rows) => {
+					if (err) {
+						console.error('Error selecting group values:', err);
+						return reject(err);
+					}
+					resolve(rows);
+				},
+			);
+		});
+	}
 }
 
 export { AttributeRepository };
