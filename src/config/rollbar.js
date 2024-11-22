@@ -9,6 +9,4 @@ const rollbar = new Rollbar({
 	captureUnhandledRejections: true,
 });
 
-rollbar.log('Rollbar is working');
-
 export default rollbar;

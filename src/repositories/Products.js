@@ -87,6 +87,12 @@ class ProductRepository {
 			);
 		});
 	}
+
+	async checkProductStock(id) {
+		const product = await this.findById(id);
+
+		return product ? product.quantity : 0;
+	}
 }
 
 export { ProductRepository };

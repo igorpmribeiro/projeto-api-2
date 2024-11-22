@@ -27,6 +27,18 @@ class ProductService {
 	async updateProduct(id, product) {
 		return await this.productRepository.updateProduct(id, product);
 	}
+
+	async updateProductPrice(id, price) {
+		return await this.productRepository.updateProduct(id, price);
+	}
+
+	async updateProductStock(id, quantity) {
+		return await this.productRepository.updateProduct(id, quantity);
+	}
+
+	async checkProductStock(id) {
+		return await this.productRepository.checkProductStock(id);
+	}
 }
 
 export { ProductService };
