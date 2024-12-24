@@ -5,7 +5,13 @@ import { db } from '../config/knexfile.js';
 
 class CategoryRepository {
 	async create(category) {
-		knex.insert(category).into('categories');
+		return await db('categories').insert(category);
+	}
+
+	async findById(id) {
+		const category = await db('categories').where({ id }).first();
+
+		return category;
 	}
 }
 

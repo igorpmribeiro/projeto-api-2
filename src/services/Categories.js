@@ -9,6 +9,7 @@ class CategoryService {
 	async create(category) {
 		const newCategory = new Category(
 			category.name,
+			category.title,
 			category.subtitle,
 			category.hidden,
 			category.discount,
