@@ -1,28 +1,11 @@
 import Database from '../database/database.js';
+import { db } from '../config/knexfile.js';
 
-const db = new Database().db;
+// const db = new Database().db;
 
 class CategoryRepository {
 	async create(category) {
-		return new Promise((resolve, reject) => {
-			db.run(
-				'INSERT INTO categories (name, title, subtitle, hidden, discount) VALUES (?, ?, ?, ?, ?)',
-				[
-					category.name,
-					category.title,
-					category.subtitle,
-					category.hidden,
-					category.discount,
-				],
-				(err) => {
-					if (err) {
-						reject(err);
-					} else {
-						resolve();
-					}
-				},
-			);
-		});
+		knex.insert(category).into('categories');
 	}
 }
 

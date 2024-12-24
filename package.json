@@ -13,6 +13,7 @@
   "dependencies": {
     "dotenv": "^16.4.5",
     "express": "^4.21.0",
+    "knex": "^3.1.0",
     "rollbar": "^2.26.4",
     "sqlite3": "^5.1.7",
     "zod": "^3.23.8"
