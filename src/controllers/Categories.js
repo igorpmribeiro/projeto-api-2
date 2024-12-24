@@ -25,13 +25,34 @@ class CategoryController {
 
 	async findById(req, res) {
 		try {
-			const { id } = req.params;
-			const category = await categoryService.findById(id);
+			const category = await categoryService.findById(req.params.id);
 
 			if (!category) {
 				return res.status(404).json({ message: 'Category not found' });
 			}
 			res.status(200).json(category);
+		} catch (error) {
+			res.status(500).json({ error: error.message });
+		}
+	}
+
+	async updateCategory(req, res) {
+		try {
+			const updatedCategory = await categoryService.updateCategory(
+				req.params.id,
+				req.body,
+			);
+
+			res.status(200).json({ message: 'Categoru updated', updatedCategory });
+		} catch (error) {
+			res.status(500).json({ error: error.message });
+		}
+	}
+
+	async listAllCategories(req, res) {
+		try {
+			const categories = await categoryService.listAllCategories();
+			res.status(200).json(categories);
 		} catch (error) {
 			res.status(500).json({ error: error.message });
 		}
