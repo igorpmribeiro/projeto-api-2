@@ -1,29 +1,60 @@
 class ProductValidator {
+	constructor() {
+		this.validationRules = {
+			name: {
+				validate: (value) => typeof value === 'string',
+				message: 'Name must be a string',
+				required: true,
+			},
+			price: {
+				validate: (value) => typeof value === 'number' && value >= 0,
+				message: 'Price must be a number greater or equal to 0',
+				required: true,
+			},
+			quantity: {
+				validate: (value) => typeof value === 'number' && value >= 0,
+				message: 'Quantity must be a number',
+				required: true,
+			},
+			description: {
+				validate: (value) => typeof value === 'string',
+				message: 'Description must be a string',
+				required: false,
+			},
+			categories: {
+				validate: (value) => Array.isArray(value),
+				message: 'Categories must be an array',
+				required: false,
+			},
+			codref: {
+				validate: (value) => typeof value === 'string',
+				message: 'Codref must be a string',
+				required: false,
+			},
+		};
+	}
+
+	validateField(fieldName, value, isRequired = false) {
+		const rule = this.validationRules[fieldName];
+
+		if (value === undefined) {
+			return isRequired ? rule.message : null;
+		}
+
+		if (value !== undefined && !rule.validate(value)) {
+			return rule.message;
+		}
+
+		return null;
+	}
+
 	validate(data) {
 		const errors = [];
 
-		if (!data.name || typeof data.name !== 'string') {
-			errors.push('Name is required and must be a string');
-		}
-
-		if (typeof data.price !== 'number' || data.price <= 0) {
-			errors.push('Price must be a number greater than 0');
-		}
-
-		if (typeof data.quantity !== 'number' || data.quantity < 0) {
-			errors.push('Quantity must be a number');
-		}
-
-		if (data.description && typeof data.description !== 'string') {
-			errors.push('Description must be a string');
-		}
-
-		if (data.categories && !Array.isArray(data.categories)) {
-			errors.push('Categories must be an array');
-		}
-
-		if (data.codref && typeof data.codref !== 'string') {
-			errors.push('SKU must be a string');
+		for (const field of Object.keys(this.validationRules)) {
+			const rule = this.validationRules[field];
+			const error = this.validateField(field, data[field], rule.required);
+			if (error) errors.push(error);
 		}
 
 		return {
@@ -31,40 +62,15 @@ class ProductValidator {
 			errors,
 		};
 	}
+
 	validateUpdate(data) {
 		const errors = [];
 
-		if (data.name !== undefined && typeof data.name !== 'string') {
-			errors.push('Name must be a string');
-		}
-
-		if (
-			data.price !== undefined &&
-			(typeof data.price !== 'number' || data.price <= 0)
-		) {
-			errors.push('Price must be a number greater than 0');
-		}
-
-		if (
-			data.quantity !== undefined &&
-			(typeof data.quantity !== 'number' || data.quantity < 0)
-		) {
-			errors.push('Quantity must be a number');
-		}
-
-		if (
-			data.description !== undefined &&
-			typeof data.description !== 'string'
-		) {
-			errors.push('Description must be a string');
-		}
-
-		if (data.categories !== undefined && !Array.isArray(data.categories)) {
-			errors.push('Categories must be an array');
-		}
-
-		if (data.codref !== undefined && typeof data.codref !== 'string') {
-			errors.push('SKU must be a string');
+		for (const field of Object.keys(data)) {
+			if (this.validationRules[field]) {
+				const error = this.validateField(field, data[field], false);
+				if (error) errors.push(error);
+			}
 		}
 
 		return {
