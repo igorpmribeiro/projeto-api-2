@@ -8,8 +8,8 @@ class CategoryService {
 
 	async create(categoryData) {
 		const category = new Category(categoryData);
-		const result = await this.categoryRepository.create(category);
-		return result[0]; // Return the inserted ID
+		const id = await this.categoryRepository.create(category);
+		return id;
 	}
 
 	async findById(id) {

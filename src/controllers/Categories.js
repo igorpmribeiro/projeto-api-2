@@ -15,9 +15,13 @@ class CategoryController {
 			}
 
 			const categoryId = await categoryService.create(req.body);
-			res
-				.status(201)
-				.json({ id: categoryId, message: 'Category created successfully' });
+			const category = await categoryService.findById(categoryId);
+			
+			res.status(201).json({
+				status: 201,
+				message: 'Category created successfully',
+				category: category
+			});
 		} catch (error) {
 			res.status(500).json({ error: error.message });
 		}
