@@ -19,6 +19,7 @@ class CategoryRepository {
 			name: category.name,
 			subtitle: category.subtitle,
 			hidden: category.hidden,
+			discount: category.discount,
 			parent_id: category.parentId,
 			sort_order: category.sortOrder
 		});
