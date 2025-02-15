@@ -1,10 +1,10 @@
 class Category {
-	constructor(name, title, subtitle, hidden, discount) {
-		this.name = name;
-		this.title = title;
-		this.subtitle = subtitle;
-		this.hidden = hidden;
-		this.discount = discount;
+	constructor(data = {}) {
+		this.name = data.name;
+		this.subtitle = data.subtitle;
+		this.hidden = data.hidden;
+		this.parent_id = data.parent_id;
+		this.sort_order = data.sort_order;
 	}
 }
 

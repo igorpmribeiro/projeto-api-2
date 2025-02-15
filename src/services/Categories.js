@@ -6,45 +6,34 @@ class CategoryService {
 		this.categoryRepository = new CategoryRepository();
 	}
 
-	async create(category) {
-		const newCategory = new Category(
-			category.name,
-			category.title,
-			category.subtitle,
-			category.hidden,
-			category.discount,
-			category.image,
-		);
-
-		return this.categoryRepository.create(newCategory);
+	async create(categoryData) {
+		const category = new Category(categoryData);
+		const result = await this.categoryRepository.create(category);
+		return result[0]; // Return the inserted ID
 	}
 
 	async findById(id) {
-		return await this.categoryRepository.findById(id);
+		const category = await this.categoryRepository.findById(id);
+		return category ? new Category(category).toJSON() : null;
 	}
 
-	async updateCategory(id, category) {
+	async updateCategory(id, categoryData) {
 		const currentCategory = await this.findById(id);
 		if (!currentCategory) {
 			throw new Error('Category not found');
 		}
 
-		const updatedCategory = {
-			name: category.name ?? currentCategory.name,
-			title: category.title ?? currentCategory.title,
-			subtitle: category.subtitle ?? currentCategory.subtitle,
-			hidden: category.hidden ?? currentCategory.hidden,
-			discount: category.discount ?? currentCategory.discount,
-			image: category.image ?? currentCategory.image,
-		};
+		const updatedCategory = new Category({
+			...currentCategory,
+			...categoryData
+		});
 
-		await this.categoryRepository.update(id, updatedCategory);
-
-		return updatedCategory;
+		return this.categoryRepository.update(id, updatedCategory);
 	}
 
 	async listAllCategories() {
-		return await this.categoryRepository.listAllCategories();
+		const categories = await this.categoryRepository.listAllCategories();
+		return categories;
 	}
 }
 

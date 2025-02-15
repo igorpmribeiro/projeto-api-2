@@ -2,16 +2,41 @@ import { db } from '../config/knexfile.js';
 
 class ProductRepository {
 	async create(product) {
-		return await db('products').insert(product);
+		const productToSave = {
+			...product,
+			dimensions: JSON.stringify(product.dimensions),
+			images: JSON.stringify(product.images),
+			categories: JSON.stringify(product.categories),
+		};
+
+		const [id] = await db('products').insert(productToSave);
+		return {
+			...product,
+			id,
+		};
 	}
 
 	async findById(id) {
 		const product = await db('products').where({ id }).first();
+		if (product) {
+			return {
+				...product,
+				dimensions: JSON.parse(product.dimensions || '[]'),
+				images: JSON.parse(product.images || '[]'),
+				categories: JSON.parse(product.categories || '[]'),
+			};
+		}
 		return product;
 	}
 
 	async listAllProducts() {
-		return await db('products').select('*');
+		const products = await db('products').select('*');
+		return products.map((product) => ({
+			...product,
+			dimensions: JSON.parse(product.dimensions || '[]'),
+			images: JSON.parse(product.images || '[]'),
+			categories: JSON.parse(product.categories || '[]'),
+		}));
 	}
 
 	async updateProduct(id, product) {

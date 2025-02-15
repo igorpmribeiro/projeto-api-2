@@ -1,12 +1,18 @@
 class Product {
-	constructor(id, name, price, quantity, description, codref, categories = []) {
-		this.id = id;
-		this.name = name;
-		this.price = price;
-		this.quantity = quantity;
-		this.description = description;
-		this.codref = codref;
-		this.categories = categories;
+	constructor(data = {}) {
+		this.id = data.id || null;
+		this.name = data.name;
+		this.price = data.price;
+		this.quantity = data.quantity;
+		this.check_stock = data.check_stock;
+		this.weight = data.weight;
+		this.dimensions = data.dimensions || [];
+		this.quantity_critical = data.quantity_critical;
+		this.description_full = data.description_full;
+		this.small_description = data.small_description;
+		this.images = data.images || [];
+		this.codref = data.codref;
+		this.categories = data.categories || [];
 	}
 }
 

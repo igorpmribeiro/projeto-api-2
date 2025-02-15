@@ -43,7 +43,7 @@ class CategoryController {
 				req.body,
 			);
 
-			res.status(200).json({ message: 'Categoru updated', updatedCategory });
+			res.status(200).json({ message: 'Category updated', updatedCategory });
 		} catch (error) {
 			res.status(500).json({ error: error.message });
 		}
@@ -52,9 +52,15 @@ class CategoryController {
 	async listAllCategories(req, res) {
 		try {
 			const categories = await categoryService.listAllCategories();
-			res.status(200).json(categories);
+			res.status(200).json({
+				status: 200,
+				response: categories
+			});
 		} catch (error) {
-			res.status(500).json({ error: error.message });
+			res.status(500).json({
+				status: 500,
+				error: error.message
+			});
 		}
 	}
 }
