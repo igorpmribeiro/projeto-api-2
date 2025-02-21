@@ -81,6 +81,15 @@ class ProductController {
 			next(error);
 		}
 	}
+
+	async insertAttribute(req, res, next) {
+		try {
+			await IProductService.insertAttribute(req.params.id, req.body);
+			res.status(200).json({ message: 'Attribute inserted' });
+		} catch (error) {
+			next(error);
+		}
+	}
 }
 
 export { ProductController };

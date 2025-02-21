@@ -71,6 +71,16 @@ class ProductService {
 			throw new Error(`Erro ao verificar estoque: ${error.message}`);
 		}
 	}
+
+	async insertAttribute(id, attribute) {
+		try {
+			if (!id || !attribute)
+				throw new Error('Produto não encontrado');
+			return await this.productRepository.insertAttribute(id, attribute);
+		} catch (error) {
+			throw new Error(`Erro ao inserir atributo: ${error.message}`);
+		}
+	}
 }
 
 export { ProductService };

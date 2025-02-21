@@ -1,6 +1,5 @@
 class Product {
 	constructor(data = {}) {
-		this.id = data.id || null;
 		this.name = data.name;
 		this.price = data.price;
 		this.quantity = data.quantity;
@@ -13,7 +12,26 @@ class Product {
 		this.images = data.images || [];
 		this.codref = data.codref;
 		this.categories = data.categories || [];
+		this.attrGroupId = data.attrGroupId;
+		this.attrType = data.attrType;
+		this.attributes = data.attributes ? data.attributes.map(attr => new ProductAttributes(attr)) : [];
 	}
 }
 
-export { Product };
+class ProductAttributes {
+	constructor(data = {}) {
+		this.paativo = 1,
+		this.padefault = data.isDefault;
+		this.pacodref = data.codref;
+		this.paestoque = data.stock;
+		this.paprecodiff = data.priceDiff;
+		this.papreco = data.price;
+		this.papeso = data.weight;
+		this.papesodiff = data.weightDiff;
+		this.paoptionsids = data.optionsIds || [];
+		this.paimagem = data.image;
+		this.padimensions = data.dimensions;
+	}
+}
+
+export { Product, ProductAttributes };
