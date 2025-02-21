@@ -3,9 +3,9 @@ class AttributeValidator {
 		const errors = [];
 
 		// Validação do groupName
-		if (!data.groupName) {
+		if (!data.attrGroupName) {
 			errors.push('groupName é obrigatório');
-		} else if (typeof data.groupName !== 'string') {
+		} else if (typeof data.attrGroupName !== 'string') {
 			errors.push('groupName deve ser uma string');
 		}
 

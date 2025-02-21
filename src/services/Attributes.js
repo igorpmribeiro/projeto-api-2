@@ -1,5 +1,5 @@
 import { AttributeRepository } from '../repositories/Attributes.js';
-import { Attribute, AttributeOption } from '../models/Attributes.js';
+import { Attribute, AttributeOptions } from '../models/Attributes.js';
 
 class AttributeService {
 	constructor() {
@@ -7,23 +7,12 @@ class AttributeService {
 	}
 
 	async create(attribute) {
-		if (!attribute || !attribute.groupName || !attribute.options) {
-			throw new Error('Invalid attribute data');
-		}
+		const newAttribute = new Attribute(attribute);
+		newAttribute.options = newAttribute.options.map(
+			(option) => new AttributeOptions(option)
+		);
 
-		// Corrigindo a criação do Attribute
-		const newAttribute = new Attribute({
-			groupName: attribute.groupName,
-			options: attribute.options.map((option) => ({
-				type: option.type,
-				name: option.name,
-				value: option.value,
-				optionSort: option.optionSort,
-				valueSort: option.valueSort,
-			})),
-		});
-
-		return this.attributeRepository.create(newAttribute);
+		return await this.attributeRepository.create(newAttribute);
 	}
 
 	async findGroups() {

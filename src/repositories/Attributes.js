@@ -2,26 +2,33 @@ import Database from '../database/database.js';
 import { db } from '../config/knexfile.js';
 
 class AttributeRepository {
-	async create(attribute) {
-		return await db.transaction(async (trx) => {
-			const [attributeId] = await trx('attributes').insert({
-				group_name: attribute.groupName,
+async create(attribute) {
+	const { options, ...attributeData } = attribute;
+	const attributeToSave = {
+		...attributeData,
+	};
+
+	try {
+		const [id] = await db('attributes').insert(attributeToSave);
+		if (options && options.length > 0) {
+			const attributeOptionsToSave = options.map((option) => {
+				return {
+					...option,
+					attribute_id: id,
+				};
 			});
 
-			const options = attribute.options.map((option) => ({
-				attribute_id: attributeId,
-				type: option.type,
-				name: option.name,
-				value: option.value,
-				optionSort: option.optionSort,
-				valueSort: option.valueSort,
-			}));
-
-			await trx('attribute_options').insert(options);
-
-			return attributeId;
-		});
+			await db('attribute_options').insert(attributeOptionsToSave);
+		}
+		return {
+			...attribute,
+			id,
+		};
+	} catch (error) {
+		console.error("Erro ao inserir atributo:", error);
+		throw new Error("Erro ao salvar atributo no banco de dados");
 	}
+}
 
 	findGroups() {
 		return db('attributes').select('id', 'group_name');
