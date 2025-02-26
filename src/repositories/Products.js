@@ -2,54 +2,71 @@ import { db } from '../config/knexfile.js';
 
 class ProductRepository {
 	async create(product) {
-		const { attributes, ...productData } = product;
-		
+		const { categories, attributes, ...productData } = product;
 
-		const productToSave = {
-			...productData,
-			dimensions: JSON.stringify(product.dimensions),
-			images: JSON.stringify(product.images),
-			categories: JSON.stringify(product.categories),
-		};
-	
 		try {
+			const [id] = await db('products').insert({
+				...productData
+			});
 
-			const [id] = await db('products').insert(productToSave);
-	
-			if (attributes && attributes.length > 0) {
-				const productAttrToSave = attributes.map((attr) => {
-					const { codref, ...filteredAttr } = attr;
-					return {
-						...filteredAttr,
-						paoptionsids: JSON.stringify(attr.paoptionsids),
+			if (categories && categories.length > 0 ) {
+				await db('products_categories').insert(
+					categories.map((category) => ({
 						products_id: id,
-						products_options_id: product.attrGroupId 
-					};
-				});
-				
-				await db('products_attributes').insert(productAttrToSave);
+						categories_id: category
+					}))
+				);
 			}
 
-	
+			if (attributes && attributes.length > 0) {
+				await db('products_attributes').insert(
+					attributes.map((attribute) => ({
+						products_id: id,
+						products_options_id: attribute.attrGroupId,
+						paativo: 1, 
+						padefault: attribute.isDefault || 0,
+						paprecodiff: attribute.priceDiff || '',
+						papesodiff: attribute.weightDiff || '',
+						paestoque: attribute.stock || 0,
+						papreco: attribute.price || 0,
+						papeso: attribute.weight || 0,
+						pacodref: attribute.pacodref || attribute.codref || '',
+						paoptionsids: JSON.stringify(attribute.optionsIds || []),
+						paimagem: JSON.stringify(attribute.image || ''),
+						padimensions: JSON.stringify(attribute.dimensions || [])
+					}))
+				);
+			}
+			
 			return {
-				...product,
-				id,
+				...productData,
+				id
 			};
+			
 		} catch (error) {
-			console.error("Erro ao inserir produto:", error);
-			throw new Error("Erro ao salvar produto no banco de dados");
+			throw new Error('Error creating product: ' + error.message);
 		}
 	}
 	
 
 	async findById(id) {
 		const product = await db('products').where({ id }).first();
+
 		if (product) {
+			const categories = await db('products_categories')
+				.join('categories', 'products_categories.categories_id', '=', 'categories.id')
+				.where({ 'products_categories.products_id': id })
+				.select('categories.id', 'categories.name', 'categories.parent_id');
+
 			return {
 				...product,
 				dimensions: JSON.parse(product.dimensions || '[]'),
 				images: JSON.parse(product.images || '[]'),
-				categories: JSON.parse(product.categories || '[]'),
+				categories: categories.map(category => ({
+					id: category.id,
+					name: category.name,
+					parent_id: category.parent_id || 0
+				}))
 			};
 		}
 		return product;

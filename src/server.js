@@ -4,6 +4,7 @@ import Database from './database/database.js';
 import { productRouter } from './routes/Products.js';
 import { categoryRouter } from './routes/Categories.js';
 import { attributeRouter } from './routes/Attributes.js';
+import { customersRouter } from './routes/Customers.js';
 import errorRouter from './routes/test.js';
 
 const app = express();
@@ -14,6 +15,7 @@ app.use(rollbar.errorHandler());
 app.use('/ws/v2/products', productRouter);
 app.use('/ws/v2/categories', categoryRouter);
 app.use('/ws/v2/attributes', attributeRouter);
+app.use('/ws/v2/customers', customersRouter);
 app.use('/ws/v2/test', errorRouter);
 
 app.use((err, req, res, next) => {
