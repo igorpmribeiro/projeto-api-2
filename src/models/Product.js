@@ -20,7 +20,7 @@ class Product {
 
 class ProductAttributes {
 	constructor(data = {}) {
-		this.paativo = 1,
+		this.paativo = 1;
 		this.padefault = data.isDefault;
 		this.pacodref = data.codref;
 		this.paestoque = data.stock;

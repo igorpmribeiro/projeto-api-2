@@ -44,7 +44,7 @@ class ProductRepository {
 			};
 			
 		} catch (error) {
-			throw new Error('Error creating product: ' + error.message);
+			throw new Error(`Error creating product: ${error.message}`);
 		}
 	}
 	

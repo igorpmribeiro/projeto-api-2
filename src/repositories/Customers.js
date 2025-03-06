@@ -86,10 +86,8 @@ class CustomersRepository {
                 customers_gender: customer.gender ? customer.gender : existingCustomer.customers_gender
             });
 
-            console.log(customer.address);
-
             if (customer.address) {
-                await db("customers_address").update({
+               const updatedAddress = await db("customers_address").update({
                     entry_firstname: customer.address.firstname,
                     entry_lastname: customer.address.lastname,
                     entry_gender: customer.address.gender,
@@ -100,9 +98,14 @@ class CustomersRepository {
                     entry_suburb: customer.address.suburb,
                     entry_city: customer.address.city
                 }).where({customers_id: id}).where({address_book_id: customer.address_id});
+
+                return { message: "Customer and address updated successfully.", updatedCustomer, updatedAddress };
             }
 
-            return updatedCustomer;
+            return {
+                message: "Customer updated successfully.",
+                updatedCustomer
+            };
 
         } catch (error) {
             console.error("Error updating customer:", error);
@@ -122,10 +125,23 @@ class CustomersRepository {
                 payment_rules: JSON.stringify(group.paymentRules),
             });
 
-            return { message: "Group created successfully." };
+            return { message: "Group created successfully.", id };
         } catch (error) {
             console.error("Error creating group:", error);
             throw new Error(`Error creating group: ${error.message}`);
+        }
+    }
+
+    async findById(id) {
+        try {
+            const customer = await db("customers").where({ customers_id: id }).first();
+            if (!customer) {
+                throw new Error("Customer not found.");
+            }
+            return customer;
+        } catch (error) {
+            console.error("Error finding customer:", error);
+            throw new Error(`Error finding customer: ${error.message}`);
         }
     }
 
