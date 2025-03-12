@@ -12,6 +12,7 @@ productRouter.put('/update/:id', productController.updateProduct);
 productRouter.patch('/update/:id/price', productController.updateProductPrice);
 productRouter.patch('/update/:id/stock', productController.updateProductStock);
 productRouter.get('/:id/stock', productController.checkProductStock);
+productRouter.get('/:id/price', productController.checkProductPrice);
 productRouter.put('/:id/attribute/insert', productController.insertAttribute);
 
 export { productRouter };

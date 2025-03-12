@@ -12,8 +12,12 @@ class ProductController {
 				return res.status(400).json({ errors: validationResult.errors });
 			}
 
-			await IProductService.create(req.body);
-			res.status(201).json({ message: 'Produto criado com sucesso' });
+			const createdProduct = await IProductService.create(req.body);
+			res.status(201).json({
+				message: 'Produto criado com sucesso',
+				ProductID: createdProduct.id,
+				Name: createdProduct.name,
+			});
 		} catch (error) {
 			next(error);
 		}
@@ -55,6 +59,19 @@ class ProductController {
 		}
 	}
 
+	async checkProductPrice(req, res, next) {
+		try {
+			const product = await IProductService.findById(req.params.id);
+			if (!product) {
+				return res.status(404).json({ error: 'Product not found' });
+			}
+
+			res.status(200).json({ id: req.params.id, price: product.price });
+		} catch (error) {
+			next(error);
+		}
+	}
+
 	async updateProductPrice(req, res, next) {
 		try {
 			await IProductService.updateProduct(req.params.id, req.body);
@@ -86,6 +103,17 @@ class ProductController {
 		try {
 			await IProductService.insertAttribute(req.params.id, req.body);
 			res.status(200).json({ message: 'Attribute inserted' });
+		} catch (error) {
+			next(error);
+		}
+	}
+
+	async getProductAttributes(req, res, next) {
+		try {
+			const attributes = await IProductService.getProductAttributes(
+				req.params.id,
+			);
+			res.status(200).json({ id: req.params.id, attributes: attributes });
 		} catch (error) {
 			next(error);
 		}

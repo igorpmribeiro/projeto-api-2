@@ -14,10 +14,11 @@ class Product {
 		this.categories = data.categories || [];
 		this.attrGroupId = data.attrGroupId;
 		this.attrType = data.attrType;
-		this.attributes = data.attributes ? data.attributes.map(attr => new ProductAttributes(attr)) : [];
+		this.attributes = data.attributes
+			? data.attributes.map((attr) => new ProductAttributes(attr))
+			: [];
 	}
 }
-
 class ProductAttributes {
 	constructor(data = {}) {
 		this.paativo = 1;
@@ -28,10 +29,9 @@ class ProductAttributes {
 		this.papreco = data.price;
 		this.papeso = data.weight;
 		this.papesodiff = data.weightDiff;
-		this.paoptionsids = data.optionsIds || [];
+		this.optionsIds = data.optionsIds || [];
 		this.paimagem = data.image;
 		this.padimensions = data.dimensions;
 	}
 }
-
 export { Product, ProductAttributes };

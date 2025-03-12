@@ -53,6 +53,15 @@ class ProductService {
 		}
 	}
 
+	async checkProductPrice(id) {
+		try {
+			if (!id) throw new Error('ID não fornecido');
+			return await this.productRepository.checkProductPrice(id);
+		} catch (error) {
+			throw new Error(`Erro ao verificar preço: ${error.message}`);
+		}
+	}
+
 	async updateProductStock(id, quantity) {
 		try {
 			if (!id || quantity === undefined)
@@ -74,11 +83,19 @@ class ProductService {
 
 	async insertAttribute(id, attribute) {
 		try {
-			if (!id || !attribute)
-				throw new Error('Produto não encontrado');
+			if (!id || !attribute) throw new Error('Produto não encontrado');
 			return await this.productRepository.insertAttribute(id, attribute);
 		} catch (error) {
 			throw new Error(`Erro ao inserir atributo: ${error.message}`);
+		}
+	}
+
+	async getProductAttributes(id) {
+		try {
+			if (!id) throw new Error('ID não fornecido');
+			return await this.productRepository.getProductAttributes(id);
+		} catch (error) {
+			throw new Error(`Erro ao buscar atributos do produto: ${error.message}`);
 		}
 	}
 }

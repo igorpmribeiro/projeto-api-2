@@ -2,19 +2,22 @@ import { db } from '../config/knexfile.js';
 
 class ProductRepository {
 	async create(product) {
-		const { categories, attributes, ...productData } = product;
+		const { categories, attributes, images, dimensions, ...productData } =
+			product;
 
 		try {
 			const [id] = await db('products').insert({
-				...productData
+				...productData,
+				images: JSON.stringify(images || []),
+				dimensions: JSON.stringify(dimensions || []),
 			});
 
-			if (categories && categories.length > 0 ) {
+			if (categories && categories.length > 0) {
 				await db('products_categories').insert(
 					categories.map((category) => ({
 						products_id: id,
-						categories_id: category
-					}))
+						categories_id: category,
+					})),
 				);
 			}
 
@@ -22,39 +25,42 @@ class ProductRepository {
 				await db('products_attributes').insert(
 					attributes.map((attribute) => ({
 						products_id: id,
-						products_options_id: attribute.attrGroupId,
-						paativo: 1, 
+						products_options_id: product.attrGroupId,
+						paativo: 1,
 						padefault: attribute.isDefault || 0,
-						paprecodiff: attribute.priceDiff || '',
-						papesodiff: attribute.weightDiff || '',
+						paprecodiff: attribute.priceDiff || 'add',
+						papesodiff: attribute.weightDiff || 'add',
 						paestoque: attribute.stock || 0,
 						papreco: attribute.price || 0,
 						papeso: attribute.weight || 0,
 						pacodref: attribute.pacodref || attribute.codref || '',
 						paoptionsids: JSON.stringify(attribute.optionsIds || []),
 						paimagem: JSON.stringify(attribute.image || ''),
-						padimensions: JSON.stringify(attribute.dimensions || [])
-					}))
+						padimensions: JSON.stringify(attribute.dimensions || []),
+					})),
 				);
 			}
-			
+
 			return {
 				...productData,
-				id
+				id,
 			};
-			
 		} catch (error) {
 			throw new Error(`Error creating product: ${error.message}`);
 		}
 	}
-	
 
 	async findById(id) {
 		const product = await db('products').where({ id }).first();
 
 		if (product) {
 			const categories = await db('products_categories')
-				.join('categories', 'products_categories.categories_id', '=', 'categories.id')
+				.join(
+					'categories',
+					'products_categories.categories_id',
+					'=',
+					'categories.id',
+				)
 				.where({ 'products_categories.products_id': id })
 				.select('categories.id', 'categories.name', 'categories.parent_id');
 
@@ -62,11 +68,11 @@ class ProductRepository {
 				...product,
 				dimensions: JSON.parse(product.dimensions || '[]'),
 				images: JSON.parse(product.images || '[]'),
-				categories: categories.map(category => ({
+				categories: categories.map((category) => ({
 					id: category.id,
 					name: category.name,
-					parent_id: category.parent_id || 0
-				}))
+					parent_id: category.parent_id || 0,
+				})),
 			};
 		}
 		return product;
@@ -109,7 +115,16 @@ class ProductRepository {
 
 	async checkProductStock(id) {
 		const product = await this.findById(id);
-		return product ? product.quantity : 0;
+		return product
+			? product.quantity
+			: 'Produto não encontrado, verifique o ID do produto';
+	}
+
+	async checkProductPrice(id) {
+		const product = await this.findById(id);
+		return product
+			? product.price
+			: 'Produto não encontrado, verifique o ID do produto';
 	}
 
 	async insertAttribute(id, attribute) {
@@ -121,7 +136,7 @@ class ProductRepository {
 		const attributeToSave = {
 			products_id: id,
 			products_options_id: product.attrGroupId,
-			paativo: 1, 
+			paativo: 1,
 			padefault: attribute.isDefault || 0,
 			paprecodiff: attribute.priceDiff || '',
 			papesodiff: attribute.weightDiff || '',
@@ -131,12 +146,19 @@ class ProductRepository {
 			pacodref: attribute.pacodref || attribute.codref || '',
 			paoptionsids: JSON.stringify(attribute.optionsIds || []),
 			paimagem: JSON.stringify(attribute.image || ''),
-			padimensions: JSON.stringify(attribute.dimensions || [])
+			padimensions: JSON.stringify(attribute.dimensions || []),
 		};
 
 		await db('products_attributes').insert(attributeToSave);
 
 		return attributeToSave;
+	}
+
+	async getProductAttributes(productIds) {
+		const attributes = await db('products_attributes')
+			.whereIn('products_id', productIds)
+			.select('*');
+		return attributes;
 	}
 }
 
