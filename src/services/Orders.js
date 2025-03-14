@@ -62,6 +62,25 @@ class OrdersService {
 			throw new Error(`Erro ao criar pedido: ${error.message}`);
 		}
 	}
+
+	async listOrders(page = 1) {
+		try {
+			// Convertendo o valor de page para número e garantindo que seja pelo menos 1
+			const pageNumber = Math.max(1, Number.parseInt(page) || 1);
+			const limit = 20; // Limite fixo de 20 itens por página
+
+			// Busca os pedidos paginados
+			const result = await this.ordersRepository.listOrders(pageNumber, limit);
+
+			// Transforma os pedidos usando o modelo Orders, mantendo informações de paginação
+			return {
+				orders: result.orders.map((order) => new Orders(order)),
+				pagination: result.pagination,
+			};
+		} catch (error) {
+			throw new Error(`Erro ao listar pedidos: ${error.message}`);
+		}
+	}
 }
 
 export { OrdersService };

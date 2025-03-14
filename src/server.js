@@ -10,14 +10,12 @@ import { scriptRouter } from './routes/Script.js';
 import { webhookRouter } from './routes/Webhooks.js';
 import { fabricantesRouter } from './routes/Fabricantes.js';
 import { promocoesRouter } from './routes/Promocoes.js';
-
 import errorRouter from './routes/test.js';
 
 const app = express();
-
 app.use(express.json());
-app.use(rollbar.errorHandler());
 
+// Routes
 app.use('/ws/v2/products', productRouter);
 app.use('/ws/v2/categories', categoryRouter);
 app.use('/ws/v2/attributes', attributeRouter);
@@ -30,9 +28,27 @@ app.use('/ws/v2/fabricantes', fabricantesRouter);
 app.use('/ws/v2/promotions', promocoesRouter);
 // app.use('/ws/v2/test', errorRouter);
 
+// Improved error handling middleware
 app.use((err, req, res, next) => {
-	rollbar.error(err, (err, uuid) => {
-		res.status(500).json({ error: 'Ocorreu um erro no servidor', uuid });
+	// Log error to Rollbar
+	rollbar.error(err, (rollbarErr, uuid) => {
+		// Check if error is validation related (typically 400 status)
+		if (
+			err.message &&
+			(err.message.includes('Dados inválidos') ||
+				err.message.includes('obrigatório'))
+		) {
+			return res.status(400).json({
+				error: err.message,
+				uuid: uuid,
+			});
+		}
+
+		// Default server error (500)
+		return res.status(500).json({
+			error: err.message || 'Ocorreu um erro no servidor',
+			uuid: uuid,
+		});
 	});
 });
 

@@ -8,27 +8,76 @@ class ProductValidator {
 			},
 			price: {
 				validate: (value) => typeof value === 'number' && value >= 0,
-				message: 'Price must be a number greater or equal to 0',
+				message: 'Price must be a number and greater than or equal to 0',
 				required: true,
 			},
 			quantity: {
 				validate: (value) => typeof value === 'number' && value >= 0,
-				message: 'Quantity must be a number',
+				message: 'Quantity must be a number and greater than or equal to 0',
 				required: true,
 			},
-			description: {
+			description_full: {
 				validate: (value) => typeof value === 'string',
 				message: 'Description must be a string',
 				required: false,
 			},
+			small_description: {
+				validate: (value) =>
+					typeof value === 'string' || (value && value.length <= 255),
+				message:
+					'Small description must be a string and less than 255 characters',
+				required: false,
+			},
+			weight: {
+				validate: (value) => typeof value === 'number' && value >= 0,
+				message: 'Weight must be a number and greater than or equal to 0',
+				required: false,
+			},
+			check_stock: {
+				validate: (value) =>
+					typeof value === 'string' &&
+					(value === 'products' || value === 'attributes'),
+				message: 'Check stock must be either "products" or "attributes"',
+				required: true,
+			},
+			quantity_critical: {
+				validate: (value) => typeof value === 'number' && value >= 0,
+				message:
+					'Critical quantity must be a number and greater than or equal to 0',
+				required: false,
+			},
 			categories: {
-				validate: (value) => Array.isArray(value),
-				message: 'Categories must be an array',
+				validate: (value) =>
+					Array.isArray(value) && value.every((cat) => typeof cat === 'number'),
+				message: 'Categories must be an array with numbers',
 				required: false,
 			},
 			codref: {
 				validate: (value) => typeof value === 'string',
 				message: 'Codref must be a string',
+				required: false,
+			},
+			attrGroupId: {
+				validate: (value) => (value ? typeof value === 'number' : true),
+				message: 'attrGroupId must be a number',
+				required: false,
+			},
+			attributes: {
+				validate: (value) =>
+					Array.isArray(value) &&
+					value.every((attr) => typeof attr === 'object' && attr !== null),
+				message: 'Attributes must be an array of objects',
+				required: false,
+			},
+			images: {
+				validate: (value) =>
+					Array.isArray(value) &&
+					value.every(
+						(img) =>
+							typeof img === 'string' ||
+							(typeof img === 'object' && img !== null),
+					),
+				message: 'Images must be an array of strings or objects',
 				required: false,
 			},
 		};

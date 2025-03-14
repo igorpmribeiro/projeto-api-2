@@ -1,12 +1,21 @@
 class Orders {
 	constructor(data = {}) {
+		this.id = data.id;
 		this.origin = data.origin;
 		this.orders_status = data.status;
 		this.date_purchased = data.datePurchased || new Date();
 		this.order_total = data.orderTotal;
 		this.customers_id = data.customers_id;
-		this.shipping = data.shipping ? new OrdersShipping(data.shipping) : {};
-		this.payment = data.payment ? new OrdersPayment(data.payment) : {};
+
+		// Only include shipping and payment when they exist in data
+		if (data.shipping) {
+			this.shipping = new OrdersShipping(data.shipping);
+		}
+
+		if (data.payment) {
+			this.payment = new OrdersPayment(data.payment);
+		}
+
 		this.products = data.products
 			? data.products.map((product) => new OrdersProducts(product))
 			: [];
@@ -15,27 +24,21 @@ class Orders {
 
 class OrdersShipping {
 	constructor(data = {}) {
-		this.shipping_method = data.method;
-		this.shipping_cost = data.cost;
-		this.address = {
-			customers_company: data.address?.company,
-			customers_firstname: data.address?.firstname,
-			customers_lastname: data.address?.lastname,
-			customers_postcode: data.address?.postcode,
-			customers_street_address: data.address?.street,
-			customers_street_number: data.address?.number,
-			customers_street_complemento: data.address?.complement,
-			customers_suburb: data.address?.suburb,
-			customers_city: data.address?.city,
-			customers_state: data.address?.state,
-		};
+		// Include shipping properties directly
+		this.shipping_method = data.shipping_method;
+		this.shipping_cost = data.shipping_cost;
+
+		// Include address directly when it exists
+		if (data.address) {
+			this.address = data.address;
+		}
 	}
 }
 
 class OrdersPayment {
 	constructor(data = {}) {
-		this.payment_method = data.method;
-		this.payment_n_parcelas = data.installments;
+		this.payment_method = data.payment_method;
+		this.payment_n_parcelas = data.payment_n_parcelas;
 	}
 }
 

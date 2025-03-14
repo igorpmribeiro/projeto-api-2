@@ -5,5 +5,6 @@ const ordersRouter = Router();
 const ordersController = new OrdersController();
 
 ordersRouter.post('/insert', ordersController.createOrder);
+ordersRouter.get('/list', ordersController.listOrders);
 
 export { ordersRouter };

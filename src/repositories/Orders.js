@@ -1,13 +1,6 @@
 import { db } from '../config/knexfile.js';
-import { ProductRepository } from './Products.js';
-import { AttributeRepository } from './Attributes.js';
 
 class OrdersRepository {
-	constructor() {
-		this.productRepository = new ProductRepository();
-		this.attributeRepository = new AttributeRepository();
-	}
-
 	async createOrder(order) {
 		const { products, ...orderData } = order;
 
@@ -125,6 +118,106 @@ class OrdersRepository {
 		} catch (error) {
 			throw new Error(`Error creating order: ${error.message}`);
 		}
+	}
+
+	async listOrders(page = 1, limit = 20) {
+		try {
+			const offset = (page - 1) * limit;
+
+			// Fetch orders with pagination
+			const orders = await db('orders')
+				.select('*')
+				.orderBy('orders_id', 'desc')
+				.limit(limit)
+				.offset(offset);
+
+			// Count total orders for pagination info
+			const [{ count }] = await db('orders').count('* as count');
+
+			return {
+				orders: orders.map(this._mapOrderData),
+				pagination: {
+					total: Number(count),
+					currentPage: page,
+					limit,
+					totalPages: Math.ceil(Number(count) / limit),
+				},
+			};
+		} catch (error) {
+			throw new Error(`Error listing orders: ${error.message}`);
+		}
+	}
+
+	// Helper method to map order data consistently
+	_mapOrderData(order) {
+		// Base order object with required fields
+		const orderObj = {
+			id: order.orders_id,
+			origin: order.origin,
+			status: order.orders_status,
+			datePurchased: order.date_purchased,
+			orderTotal: order.order_total,
+			customers_id: order.customers_id,
+			products: [],
+		};
+
+		// Build shipping object with non-null values
+		const shippingFields = {
+			shipping_method: order.shipping_method,
+			shipping_cost: order.shipping_cost,
+		};
+
+		// Filter out null values
+		const shippingData = Object.fromEntries(
+			Object.entries(shippingFields).filter(([_, value]) => value != null),
+		);
+
+		// Build address object with non-null values
+		const addressFields = {
+			customers_company: order.customers_company,
+			customers_firstname: order.customers_firstname,
+			customers_lastname: order.customers_lastname,
+			customers_postcode: order.customers_postcode,
+			customers_street_address: order.customers_street_address,
+			customers_street_number: order.customers_street_number,
+			customers_street_complemento: order.customers_street_complemento,
+			customers_suburb: order.customers_suburb,
+			customers_city: order.customers_city,
+			customers_state: order.customers_state,
+		};
+
+		// Filter out null values
+		const addressData = Object.fromEntries(
+			Object.entries(addressFields).filter(([_, value]) => value != null),
+		);
+
+		// Only add address if we have address data
+		if (Object.keys(addressData).length > 0) {
+			shippingData.address = addressData;
+		}
+
+		// Only add shipping if we have shipping data
+		if (Object.keys(shippingData).length > 0) {
+			orderObj.shipping = shippingData;
+		}
+
+		// Build payment object with non-null values
+		const paymentFields = {
+			payment_method: order.payment_method,
+			payment_n_parcelas: order.payment_n_parcelas,
+		};
+
+		// Filter out null values
+		const paymentData = Object.fromEntries(
+			Object.entries(paymentFields).filter(([_, value]) => value != null),
+		);
+
+		// Only add payment if we have payment data
+		if (Object.keys(paymentData).length > 0) {
+			orderObj.payment = paymentData;
+		}
+
+		return orderObj;
 	}
 }
 

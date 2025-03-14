@@ -1,29 +1,65 @@
 class CategoryValidator {
+	constructor() {
+		this.validationRules = {
+			name: {
+				validate: (value) => typeof value === 'string',
+				message: 'Name must be a string',
+				required: true,
+			},
+			subtitle: {
+				validate: (value) => typeof value === 'string',
+				message: 'Subtitle must be a string',
+				required: false,
+			},
+			discount: {
+				validate: (value) => typeof value === 'number' && value >= 0,
+				message: 'Discount must be a number and greater than or equal to 0',
+				required: false,
+			},
+			hidden: {
+				validate: (value) => typeof value === 'boolean',
+				message: 'Hidden must be a boolean',
+				required: false,
+			},
+			parent_id: {
+				validate: (value) => (value ? typeof value === 'number' : true),
+				message: 'Parent ID must be a number or none',
+				required: false,
+			},
+			sort_order: {
+				validate: (value) => (value ? typeof value === 'number' : true),
+				message: 'Sort order must be a number or none',
+				required: false,
+			},
+		};
+	}
+
+	validateField(fieldName, value, isRequired = false) {
+		const rule = this.validationRules[fieldName];
+
+		if (value === undefined) {
+			return isRequired ? rule.message : null;
+		}
+
+		if (value !== undefined && !rule.validate(value)) {
+			return rule.message;
+		}
+
+		return null;
+	}
 	validate(data) {
-		const errors = [];
+		const errors = {};
 
-		if (!data.name) {
-			errors.push('Category name is required');
-		}
-
-		if (data.discount !== undefined && typeof data.discount !== 'number') {
-			errors.push('Category discount must be a number');
-		}
-
-		if (data.hidden !== undefined && typeof data.hidden !== 'boolean') {
-			errors.push('Category hidden must be a boolean (true or false)');
-		}
-
-		if (data.parent_id !== undefined && typeof data.parent_id !== 'number') {
-			errors.push('Category parent_id must be a number');
-		}
-
-		if (data.sort_order !== undefined && typeof data.sort_order !== 'number') {
-			errors.push('Category sort_order must be a number');
+		for (const field in this.validationRules) {
+			const rule = this.validationRules[field];
+			const error = this.validateField(field, data[field], rule.required);
+			if (error) {
+				errors[field] = error;
+			}
 		}
 
 		return {
-			isValid: errors.length === 0,
+			isValid: Object.keys(errors).length === 0,
 			errors,
 		};
 	}
