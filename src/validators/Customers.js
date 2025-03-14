@@ -67,15 +67,9 @@ class CustomersValidator {
 			},
 			address: {
 				validate: (value) => {
-					// Aceitar tanto array de objetos quanto um objeto único
-					return (
-						(Array.isArray(value) && value.length > 0) ||
-						(typeof value === 'object' &&
-							value !== null &&
-							!Array.isArray(value))
-					);
+					return typeof value === 'object' && value !== null;
 				},
-				message: 'Address must be an object or an array of objects',
+				message: 'Address must be a object',
 				required: true,
 			},
 		};

@@ -1,9 +1,17 @@
 import { OrdersService } from '../services/Orders.js';
+
+import { OrderValidator } from '../validators/Order.js';
+
+const IOrdersValidator = new OrderValidator();
 const IOrdersService = new OrdersService();
 
 class OrdersController {
 	async createOrder(req, res, next) {
 		try {
+			const validationErrors = IOrdersValidator.validate(req.body);
+			if (validationErrors) {
+				return res.status(400).json({ errors: validationErrors });
+			}
 			const createdOrder = await IOrdersService.createOrder(req.body);
 			return res
 				.status(201)

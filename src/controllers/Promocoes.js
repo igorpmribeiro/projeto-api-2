@@ -1,11 +1,17 @@
 import { PromocoesService } from '../services/Promocoes.js';
+import { PromotionValidator } from '../validators/Promocoes.js';
 
+const IPromotionValidator = new PromotionValidator();
 const IPromocoesService = new PromocoesService();
 
 class PromocoesController {
 	async createPromotion(req, res, next) {
 		const promotionData = req.body;
 		try {
+			const validationErrors = IPromotionValidator.validate(promotionData);
+			if (validationErrors) {
+				return res.status(400).json({ validationErrors });
+			}
 			const promotion = await IPromocoesService.createPromotion(promotionData);
 			res
 				.status(201)
