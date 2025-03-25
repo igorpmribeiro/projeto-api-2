@@ -46,6 +46,45 @@ class OrdersController {
 			return res.status(500).json({ error: error.message });
 		}
 	}
+
+	async getOrders(req, res, next) {
+		try {
+			const id = req.params.id;
+			if (!id) {
+				return res.status(400).json({ error: 'Please provide an order ID' });
+			}
+			const order = await IOrdersService.getOrders(id);
+			if (!order || order.length === 0) {
+				return res.status(404).json({ error: 'Order ID not found' });
+			}
+			return res.status(200).json({ status: 200, order_id: id, order });
+		} catch (error) {
+			next(error);
+			return res.status(500).json({ error: error.message });
+		}
+	}
+
+	async updateOrder(req, res, next) {
+		const id = req.params.id;
+		if (!id) {
+			return res.status(400).json({ error: 'Please provide an order ID' });
+		}
+		try {
+			const updateData = req.body;
+
+			const updateOrder = await IOrdersService.updateOrder(id, updateData);
+			return res
+				.status(200)
+				.json({
+					message: 'Order updated successfully',
+					order_id: id,
+					updateOrder,
+				});
+		} catch (error) {
+			next(error);
+			return res.status(500).json({ error: error.message });
+		}
+	}
 }
 
 export { OrdersController };

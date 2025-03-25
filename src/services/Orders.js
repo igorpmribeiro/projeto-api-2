@@ -81,6 +81,27 @@ class OrdersService {
 			throw new Error(`Erro ao listar pedidos: ${error.message}`);
 		}
 	}
+
+	async getOrders(id) {
+		try {
+			const orders = await this.ordersRepository.getOrders(id);
+			return orders;
+		} catch (error) {
+			throw new Error(`Erro ao obter pedidos: ${error.message}`);
+		}
+	}
+
+	async updateOrder(id, updatedData) {
+		try {
+			const updateOrder = await this.ordersRepository.updateOrder(
+				id,
+				updatedData,
+			);
+			return updateOrder;
+		} catch (error) {
+			throw new Error(`Erro ao atualizar pedido: ${error.message}`);
+		}
+	}
 }
 
 export { OrdersService };

@@ -219,6 +219,33 @@ class OrdersRepository {
 
 		return orderObj;
 	}
+
+	async getOrders(id) {
+		try {
+			const order = await db('orders')
+				.select('*')
+				.where({ orders_id: id })
+				.first();
+
+			return order;
+		} catch (error) {
+			throw new Error(`Error fetching orders: ${error.message}`);
+		}
+	}
+
+	async updateOrder(id, updatedData) {
+		const updatedOrder = await db('orders')
+			.where({ orders_id: id })
+			.update(updatedData);
+
+		if (!updatedOrder) {
+			throw new Error(`Order with ID ${id} not found`);
+		}
+
+		return await db('orders')
+			.where({ orders_id: id })
+			.select('status_id', 'nfe', 'track_code');
+	}
 }
 
 export { OrdersRepository };
