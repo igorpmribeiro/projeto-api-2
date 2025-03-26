@@ -1,7 +1,7 @@
-import express from 'express';
+import { Router } from 'express';
 import { AttributeController } from '../controllers/Attributes.js';
 
-const attributeRouter = express.Router();
+const attributeRouter = Router();
 
 const attributesController = new AttributeController();
 

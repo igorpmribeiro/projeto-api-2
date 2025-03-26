@@ -246,6 +246,20 @@ class OrdersRepository {
 			.where({ orders_id: id })
 			.select('status_id', 'nfe', 'track_code');
 	}
+
+	async cancelOrder(id) {
+		const idCancel = await db('orders_status')
+			.where({ title: 'Cancelado' })
+			.select('id');
+
+		const cancelledOrder = await db('orders')
+			.where({ orders_id: id })
+			.update({ status_id: idCancel[0].id });
+		if (!cancelledOrder) {
+			throw new Error(`Order with ID ${id} not found`);
+		}
+		return cancelledOrder;
+	}
 }
 
 export { OrdersRepository };

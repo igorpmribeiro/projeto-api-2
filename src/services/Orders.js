@@ -102,6 +102,15 @@ class OrdersService {
 			throw new Error(`Erro ao atualizar pedido: ${error.message}`);
 		}
 	}
+
+	async cancelOrder(id) {
+		try {
+			const cancelledOrder = await this.ordersRepository.cancelOrder(id);
+			return cancelledOrder;
+		} catch (error) {
+			throw new Error(`Erro ao cancelar pedido: ${error.message}`);
+		}
+	}
 }
 
 export { OrdersService };

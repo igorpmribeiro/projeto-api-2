@@ -10,6 +10,7 @@ import { scriptRouter } from './routes/Script.js';
 import { webhookRouter } from './routes/Webhooks.js';
 import { fabricantesRouter } from './routes/Fabricantes.js';
 import { promocoesRouter } from './routes/Promocoes.js';
+import { statusRouter } from './routes/Status.js';
 import errorRouter from './routes/test.js';
 
 const app = express();
@@ -26,6 +27,7 @@ app.use('/ws/v2/scripts', scriptRouter);
 app.use('/ws/v2/webhooks', webhookRouter);
 app.use('/ws/v2/fabricantes', fabricantesRouter);
 app.use('/ws/v2/promotions', promocoesRouter);
+app.use('/ws/v2/status', statusRouter);
 // app.use('/ws/v2/test', errorRouter);
 
 // Improved error handling middleware

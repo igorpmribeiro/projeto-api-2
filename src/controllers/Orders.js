@@ -73,13 +73,28 @@ class OrdersController {
 			const updateData = req.body;
 
 			const updateOrder = await IOrdersService.updateOrder(id, updateData);
-			return res
-				.status(200)
-				.json({
-					message: 'Order updated successfully',
-					order_id: id,
-					updateOrder,
-				});
+			return res.status(200).json({
+				message: 'Order updated successfully',
+				order_id: id,
+				updateOrder,
+			});
+		} catch (error) {
+			next(error);
+			return res.status(500).json({ error: error.message });
+		}
+	}
+
+	async cancelOrder(req, res, next) {
+		const id = req.params.id;
+		if (!id) {
+			return res.status(400).json({ error: 'Please provide an order ID' });
+		}
+		try {
+			await IOrdersService.cancelOrder(id);
+			return res.status(200).json({
+				message: 'Order cancelled successfully',
+				order_id: id,
+			});
 		} catch (error) {
 			next(error);
 			return res.status(500).json({ error: error.message });
