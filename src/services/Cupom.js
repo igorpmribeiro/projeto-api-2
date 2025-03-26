@@ -1,17 +1,18 @@
 import { CupomRepository } from '../repositories/Cupom.js';
 import { Cupons } from '../models/Cupom.js';
 
-const ICupomRepository = new CupomRepository();
-
 class CupomServices {
+	constructor() {
+		this.ICupomRepository = new CupomRepository();
+	}
 	async createCupom(cupomData) {
 		const cupom = new Cupons(cupomData);
-		const createdCupom = await ICupomRepository.createCupom(cupom);
+		const createdCupom = await this.ICupomRepository.createCupom(cupom);
 		return createdCupom;
 	}
 
 	async getCoupons() {
-		const coupons = await ICupomRepository.getCoupons();
+		const coupons = await this.ICupomRepository.getCoupons();
 		return coupons;
 	}
 }

@@ -1,30 +1,26 @@
 import { FabricantesService } from '../services/Fabricantes.js';
 
-const IFabricanteService = new FabricantesService();
-
 class FabricantesController {
+	constructor() {
+		this.IFabricanteService = new FabricantesService();
+	}
 	async createFabricante(req, res, next) {
 		try {
 			const fabricanteData = req.body;
-			const newFabricante =
-				await IFabricanteService.createFabricante(fabricanteData);
+			const newFabricante = await this.IFabricanteService.createFabricante(fabricanteData);
 			res.status(201).json(newFabricante);
 		} catch (error) {
-			res
-				.status(500)
-				.json({ message: `Internal server error: ${error.message}` });
+			res.status(500).json({ message: `Internal server error: ${error.message}` });
 			next(error);
 		}
 	}
 
 	async getFabricantes(req, res, next) {
 		try {
-			const fabricantes = await IFabricanteService.getFabricantes();
+			const fabricantes = await this.IFabricanteService.getFabricantes();
 			res.status(200).json(fabricantes);
 		} catch (error) {
-			res
-				.status(500)
-				.json({ message: `Internal server error: ${error.message}` });
+			res.status(500).json({ message: `Internal server error: ${error.message}` });
 			next(error);
 		}
 	}
@@ -33,18 +29,13 @@ class FabricantesController {
 		try {
 			const { id } = req.params;
 			const fabricanteData = req.body;
-			const result = await IFabricanteService.updateFabricantes(
-				id,
-				fabricanteData,
-			);
+			const result = await this.IFabricanteService.updateFabricantes(id, fabricanteData);
 			res.status(200).json({
 				message: 'Fabricante updated successfully',
 				updatedData: result,
 			});
 		} catch (error) {
-			res
-				.status(500)
-				.json({ message: `Internal server error: ${error.message}` });
+			res.status(500).json({ message: `Internal server error: ${error.message}` });
 			next(error);
 		}
 	}

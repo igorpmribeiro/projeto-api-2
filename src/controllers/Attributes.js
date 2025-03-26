@@ -1,18 +1,19 @@
 import { AttributeService } from '../services/Attributes.js';
 import { AttributeValidator } from '../validators/Attributes.js';
 
-const IAttributeService = new AttributeService();
-const attrValidator = new AttributeValidator();
-
 class AttributeController {
+	constructor() {
+		this.IAttributeService = new AttributeService();
+		this.attrValidator = new AttributeValidator();
+	}
 	async create(req, res, next) {
 		try {
-			const validationResult = attrValidator.validate(req.body);
+			const validationResult = this.attrValidator.validate(req.body);
 			if (!validationResult.isValid) {
 				return res.status(400).json({ errors: validationResult.errors });
 			}
 
-			const attributeId = await IAttributeService.create(req.body);
+			const attributeId = await this.IAttributeService.create(req.body);
 			res.status(201).json({
 				result: attributeId,
 				message: 'Attribute created successfully',
@@ -25,10 +26,10 @@ class AttributeController {
 
 	async getGroups(req, res) {
 		try {
-			const groups = await IAttributeService.findGroups();
+			const groups = await this.IAttributeService.findGroups();
 			const groupsWithOptions = await Promise.all(
 				groups.map(async (group) => {
-					const optionsCount = await IAttributeService.findGroupValues(group.id);
+					const optionsCount = await this.IAttributeService.findGroupValues(group.id);
 					return {
 						id: group.id,
 						group_name: group.group_name,
@@ -45,8 +46,8 @@ class AttributeController {
 	async findGroupValues(req, res) {
 		try {
 			const groupId = req.params.id;
-			const groupName = await IAttributeService.findGroupName(groupId);
-			const groupValues = await IAttributeService.findGroupValues(groupId);
+			const groupName = await this.IAttributeService.findGroupName(groupId);
+			const groupValues = await this.IAttributeService.findGroupValues(groupId);
 
 			if (!groupValues) {
 				return res.status(404).json({ error: 'Group not found' });

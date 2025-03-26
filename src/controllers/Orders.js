@@ -1,21 +1,19 @@
 import { OrdersService } from '../services/Orders.js';
-
 import { OrderValidator } from '../validators/Order.js';
 
-const IOrdersValidator = new OrderValidator();
-const IOrdersService = new OrdersService();
-
 class OrdersController {
+	constructor() {
+		this.IOrdersService = new OrdersService();
+		this.IOrdersValidator = new OrderValidator();
+	}
 	async createOrder(req, res, next) {
 		try {
-			const validationErrors = IOrdersValidator.validate(req.body);
+			const validationErrors = this.IOrdersValidator.validate(req.body);
 			if (validationErrors) {
 				return res.status(400).json({ errors: validationErrors });
 			}
-			const createdOrder = await IOrdersService.createOrder(req.body);
-			return res
-				.status(201)
-				.json({ message: 'Pedido criado com sucesso', createdOrder });
+			const createdOrder = await this.IOrdersService.createOrder(req.body);
+			return res.status(201).json({ message: 'Pedido criado com sucesso', createdOrder });
 		} catch (error) {
 			next(error);
 			return res.status(500).json({ error: error.message });
@@ -28,7 +26,7 @@ class OrdersController {
 			const page = req.headers.page || 1;
 
 			// Busca os pedidos com paginação
-			const result = await IOrdersService.listOrders(page);
+			const result = await this.IOrdersService.listOrders(page);
 
 			// Define os headers de paginação na resposta
 			res.set({
@@ -53,7 +51,7 @@ class OrdersController {
 			if (!id) {
 				return res.status(400).json({ error: 'Please provide an order ID' });
 			}
-			const order = await IOrdersService.getOrders(id);
+			const order = await this.IOrdersService.getOrders(id);
 			if (!order || order.length === 0) {
 				return res.status(404).json({ error: 'Order ID not found' });
 			}
@@ -72,7 +70,7 @@ class OrdersController {
 		try {
 			const updateData = req.body;
 
-			const updateOrder = await IOrdersService.updateOrder(id, updateData);
+			const updateOrder = await this.IOrdersService.updateOrder(id, updateData);
 			return res.status(200).json({
 				message: 'Order updated successfully',
 				order_id: id,
@@ -90,7 +88,7 @@ class OrdersController {
 			return res.status(400).json({ error: 'Please provide an order ID' });
 		}
 		try {
-			await IOrdersService.cancelOrder(id);
+			await this.IOrdersService.cancelOrder(id);
 			return res.status(200).json({
 				message: 'Order cancelled successfully',
 				order_id: id,

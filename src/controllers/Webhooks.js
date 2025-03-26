@@ -1,17 +1,16 @@
 import { WebhookService } from '../services/Webhooks.js';
 
-const IWebhookService = new WebhookService();
-
 class WebhookController {
+	constructor() {
+		this.IWebhookService = new WebhookService();
+	}
 	async createWebhook(req, res, next) {
 		try {
-			const webhook = await IWebhookService.createWebhook(req.body);
+			const webhook = await this.IWebhookService.createWebhook(req.body);
 			if (!webhook) {
 				return res.status(400).json({ error: 'Invalid data' });
 			}
-			return res
-				.status(201)
-				.json({ message: 'Webhook created successfully', webhook });
+			return res.status(201).json({ message: 'Webhook created successfully', webhook });
 		} catch (error) {
 			next(error);
 		}
@@ -19,7 +18,7 @@ class WebhookController {
 
 	async getAllWebhooks(req, res, next) {
 		try {
-			const webhooks = await IWebhookService.getAllWebhooks();
+			const webhooks = await this.IWebhookService.getAllWebhooks();
 			if (!webhooks) {
 				return res.status(400).json({ error: 'Invalid data' });
 			}
@@ -32,7 +31,7 @@ class WebhookController {
 	async deleteWebhook(req, res, next) {
 		try {
 			const { id } = req.params;
-			const deletedWebhook = await IWebhookService.deleteWebhook(id);
+			const deletedWebhook = await this.IWebhookService.deleteWebhook(id);
 			if (!deletedWebhook) {
 				return res.status(400).json({ error: 'Invalid data' });
 			}

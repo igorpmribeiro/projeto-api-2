@@ -1,18 +1,19 @@
 import { ProductService } from '../services/Products.js';
-
 import { ProductValidator } from '../validators/Products.js';
-const IProductService = new ProductService();
-const IProductValidator = new ProductValidator();
 
 class ProductController {
+	constructor() {
+		this.IProductService = new ProductService();
+		this.IProductValidator = new ProductValidator();
+	}
 	async create(req, res, next) {
 		try {
-			const validationResult = IProductValidator.validate(req.body);
+			const validationResult = this.IProductValidator.validate(req.body);
 			if (!validationResult.isValid) {
 				return res.status(400).json({ errors: validationResult.errors });
 			}
 
-			const createdProduct = await IProductService.create(req.body);
+			const createdProduct = await this.IProductService.create(req.body);
 			res.status(201).json({
 				message: 'Produto criado com sucesso',
 				ProductID: createdProduct.id,
@@ -25,7 +26,7 @@ class ProductController {
 
 	async findById(req, res, next) {
 		try {
-			const productId = await IProductService.findById(req.params.id);
+			const productId = await this.IProductService.findById(req.params.id);
 			if (!productId) {
 				return res.status(404).json({ error: 'Product not found' });
 			}
@@ -38,7 +39,7 @@ class ProductController {
 
 	async listAllProducts(req, res) {
 		try {
-			const products = await IProductService.listAllProducts();
+			const products = await this.IProductService.listAllProducts();
 			res.json(products);
 		} catch (error) {
 			res.status(500).json({ error: error.message });
@@ -47,12 +48,12 @@ class ProductController {
 
 	async updateProduct(req, res, next) {
 		try {
-			const validationResult = IProductValidator.validateUpdate(req.body);
+			const validationResult = this.IProductValidator.validateUpdate(req.body);
 			if (!validationResult.isValid) {
 				return res.status(400).json({ errors: validationResult.errors });
 			}
 
-			await IProductService.updateProduct(req.params.id, req.body);
+			await this.IProductService.updateProduct(req.params.id, req.body);
 			res.json({ message: 'Product updated' });
 		} catch (error) {
 			next(error);
@@ -61,7 +62,7 @@ class ProductController {
 
 	async checkProductPrice(req, res, next) {
 		try {
-			const product = await IProductService.findById(req.params.id);
+			const product = await this.IProductService.findById(req.params.id);
 			if (!product) {
 				return res.status(404).json({ error: 'Product not found' });
 			}
@@ -74,7 +75,7 @@ class ProductController {
 
 	async updateProductPrice(req, res, next) {
 		try {
-			await IProductService.updateProduct(req.params.id, req.body);
+			await this.IProductService.updateProduct(req.params.id, req.body);
 			res.json({ message: 'Product price updated' });
 		} catch (error) {
 			next(error);
@@ -83,7 +84,7 @@ class ProductController {
 
 	async updateProductStock(req, res, next) {
 		try {
-			await IProductService.updateProduct(req.params.id, req.body);
+			await this.IProductService.updateProduct(req.params.id, req.body);
 			res.status(200).json({ message: 'Product stock updated' });
 		} catch (error) {
 			next(error);
@@ -92,7 +93,7 @@ class ProductController {
 
 	async checkProductStock(req, res, next) {
 		try {
-			const stock = await IProductService.checkProductStock(req.params.id);
+			const stock = await this.IProductService.checkProductStock(req.params.id);
 			res.status(200).json({ id: req.params.id, stock: stock });
 		} catch (error) {
 			next(error);
@@ -101,7 +102,7 @@ class ProductController {
 
 	async insertAttribute(req, res, next) {
 		try {
-			await IProductService.insertAttribute(req.params.id, req.body);
+			await this.IProductService.insertAttribute(req.params.id, req.body);
 			res.status(200).json({ message: 'Attribute inserted' });
 		} catch (error) {
 			next(error);
@@ -110,9 +111,7 @@ class ProductController {
 
 	async getProductAttributes(req, res, next) {
 		try {
-			const attributes = await IProductService.getProductAttributes(
-				req.params.id,
-			);
+			const attributes = await this.IProductService.getProductAttributes(req.params.id);
 			res.status(200).json({ id: req.params.id, attributes: attributes });
 		} catch (error) {
 			next(error);

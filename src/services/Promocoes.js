@@ -1,18 +1,19 @@
 import { Promocoes } from '../models/Promocoes.js';
 import { PromocoesRepository } from '../repositories/Promocoes.js';
 
-const IPromocoesRepository = new PromocoesRepository();
-
 class PromocoesService {
+	constructor() {
+		this.IPromocoesRepository = new PromocoesRepository();
+	}
 	async createPromotion(promotion) {
-		return await IPromocoesRepository.createPromotion(promotion);
+		return await this.IPromocoesRepository.createPromotion(promotion);
 	}
 
 	async getPromotions(page = 1) {
 		const pageNumber = Math.max(1, Number.parseInt(page) || 1);
 		const limit = 10;
 
-		const result = await IPromocoesRepository.listPromotions(pageNumber, limit);
+		const result = await this.IPromocoesRepository.listPromotions(pageNumber, limit);
 
 		return {
 			pagination: {
@@ -25,7 +26,7 @@ class PromocoesService {
 	}
 
 	async getPromotionById(id) {
-		return await this.promocoesRepository.getPromotionById(id);
+		return await this.IPromocoesRepository.getPromotionById(id);
 	}
 }
 

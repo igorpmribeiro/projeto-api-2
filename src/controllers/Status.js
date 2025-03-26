@@ -1,11 +1,12 @@
 import { StatusService } from '../services/Status.js';
 
-const IStatusService = new StatusService();
-
 class StatusController {
+	constructor() {
+		this.IStatusService = new StatusService();
+	}
 	async getStatus(req, res, next) {
 		try {
-			const status = await IStatusService.getStatus();
+			const status = await this.IStatusService.getStatus();
 			res.status(200).json({ status: 200, result: [status] });
 		} catch (error) {
 			next(error);
@@ -17,7 +18,7 @@ class StatusController {
 		try {
 			const status = req.body;
 
-			const createdStatus = await IStatusService.createStatus(status);
+			const createdStatus = await this.IStatusService.createStatus(status);
 			res.status(201).json({ status: 200, result: createdStatus });
 		} catch (error) {
 			next(error);
@@ -37,7 +38,7 @@ class StatusController {
 				return res.status(400).json({ message: 'Status is required' });
 			}
 
-			const updatedStatus = await IStatusService.updateStatus(id, status);
+			const updatedStatus = await this.IStatusService.updateStatus(id, status);
 			res.status(200).json({ status: 200, result: updatedStatus });
 		} catch (error) {
 			next(error);
@@ -51,7 +52,7 @@ class StatusController {
 			if (!id) {
 				return res.status(400).json({ message: 'ID is required' });
 			}
-			const deletedStatus = await IStatusService.deleteStatus(id);
+			const deletedStatus = await this.IStatusService.deleteStatus(id);
 			if (deletedStatus.status === 404) {
 				return res.status(404).json({ error: deletedStatus });
 			}
