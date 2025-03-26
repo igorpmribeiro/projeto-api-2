@@ -5,5 +5,6 @@ const cupomRouter = Router();
 const cupomController = new CupomController();
 
 cupomRouter.post('/insert', cupomController.createCupom);
+cupomRouter.get('/list', cupomController.getCoupons);
 
 export { cupomRouter };

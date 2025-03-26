@@ -15,15 +15,7 @@ class PromocoesRepository {
 	}
 
 	async getPromotions() {
-		const promotions = await db('promotions').select(
-			'id',
-			'status',
-			'schedule_date',
-			'expires_date',
-			'groups',
-			'product_id',
-			'special_price',
-		);
+		const promotions = await db('promotions').select('id', 'status', 'schedule_date', 'expires_date', 'groups', 'product_id', 'special_price');
 
 		const products = await db('products')
 			.select('id', 'price', 'name')
@@ -33,9 +25,7 @@ class PromocoesRepository {
 			);
 
 		const result = promotions.map((promotion) => {
-			const product = products.find(
-				(product) => product.id === promotion.product_id,
-			);
+			const product = products.find((product) => product.id === promotion.product_id);
 
 			// Handle case where product might not be found
 			if (!product) {
@@ -70,22 +60,8 @@ class PromocoesRepository {
 	}
 
 	async getPromotionById(id) {
-		const { special_price, ...promotionData } = await db('promotions')
-			.select(
-				'id',
-				'status',
-				'schedule_date',
-				'expires_date',
-				'groups',
-				'product_id',
-				'special_price',
-			)
-			.where({ id })
-			.first();
-		const productData = await db('products')
-			.select('id', 'price', 'name')
-			.where({ id: promotionData.product_id })
-			.first();
+		const { special_price, ...promotionData } = await db('promotions').select('id', 'status', 'schedule_date', 'expires_date', 'groups', 'product_id', 'special_price').where({ id }).first();
+		const productData = await db('products').select('id', 'price', 'name').where({ id: promotionData.product_id }).first();
 
 		// Handle case where product is not found
 		if (!productData) {
@@ -105,6 +81,19 @@ class PromocoesRepository {
 			},
 			price_from: productData.price,
 			price_to: special_price,
+		};
+	}
+
+	async listPromotions(page, limit) {
+		const offset = (page - 1) * limit;
+
+		const promotions = await db('promotions').select('id', 'status', 'schedule_date', 'expires_date', 'groups', 'product_id', 'special_price').limit(limit).offset(offset);
+
+		const total = await db('promotions').count('* as count').first();
+
+		return {
+			promotions,
+			total: total.count,
 		};
 	}
 }

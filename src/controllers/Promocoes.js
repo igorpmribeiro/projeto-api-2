@@ -8,14 +8,12 @@ class PromocoesController {
 	async createPromotion(req, res, next) {
 		const promotionData = req.body;
 		try {
-			const validationErrors = IPromotionValidator.validate(promotionData);
-			if (validationErrors) {
-				return res.status(400).json({ validationErrors });
+			const validationResult = IPromotionValidator.validate(promotionData);
+			if (validationResult.errors.length > 0) {
+				return res.status(400).json({ validationErrors: validationResult.errors });
 			}
 			const promotion = await IPromocoesService.createPromotion(promotionData);
-			res
-				.status(201)
-				.json({ message: 'Promoção criada com sucesso', promotion });
+			res.status(201).json({ message: 'Promoção criada com sucesso', promotion });
 		} catch (error) {
 			next(error);
 		}

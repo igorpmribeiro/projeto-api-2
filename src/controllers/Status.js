@@ -1,11 +1,11 @@
-import { StatusRepository } from '../repositories/Status.js';
+import { StatusService } from '../services/Status.js';
 
-const IStatusRepository = new StatusRepository();
+const IStatusService = new StatusService();
 
 class StatusController {
-	async getStatus(res, next) {
+	async getStatus(req, res, next) {
 		try {
-			const status = await IStatusRepository.getStatus();
+			const status = await IStatusService.getStatus();
 			res.status(200).json({ status: 200, result: [status] });
 		} catch (error) {
 			next(error);
@@ -17,7 +17,7 @@ class StatusController {
 		try {
 			const status = req.body;
 
-			const createdStatus = await IStatusRepository.createStatus(status);
+			const createdStatus = await IStatusService.createStatus(status);
 			res.status(201).json({ status: 200, result: createdStatus });
 		} catch (error) {
 			next(error);
@@ -37,7 +37,7 @@ class StatusController {
 				return res.status(400).json({ message: 'Status is required' });
 			}
 
-			const updatedStatus = await IStatusRepository.updateStatus(id, status);
+			const updatedStatus = await IStatusService.updateStatus(id, status);
 			res.status(200).json({ status: 200, result: updatedStatus });
 		} catch (error) {
 			next(error);
@@ -51,7 +51,7 @@ class StatusController {
 			if (!id) {
 				return res.status(400).json({ message: 'ID is required' });
 			}
-			const deletedStatus = await IStatusRepository.deleteStatus(id);
+			const deletedStatus = await IStatusService.deleteStatus(id);
 			if (deletedStatus.status === 404) {
 				return res.status(404).json({ error: deletedStatus });
 			}

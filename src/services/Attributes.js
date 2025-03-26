@@ -1,26 +1,28 @@
 import { AttributeRepository } from '../repositories/Attributes.js';
 import { Attribute, AttributeOptions } from '../models/Attributes.js';
 
-class AttributeService {
-	constructor() {
-		this.attributeRepository = new AttributeRepository();
-	}
+const IAttributeRepository = new AttributeRepository();
 
+class AttributeService {
 	async create(attribute) {
 		const newAttribute = new Attribute(attribute);
-		newAttribute.options = newAttribute.options.map(
-			(option) => new AttributeOptions(option)
-		);
+		newAttribute.options = newAttribute.options.map((option) => new AttributeOptions(option));
 
-		return await this.attributeRepository.create(newAttribute);
+		return await IAttributeRepository.create(newAttribute);
 	}
 
 	async findGroups() {
-		return this.attributeRepository.findGroups();
+		return IAttributeRepository.findGroups();
 	}
 
 	async findGroupValues(id) {
-		return this.attributeRepository.findGroupValues(id);
+		return IAttributeRepository.findGroupValues(id);
+	}
+
+	async findGroupName(id) {
+		const groupName = await IAttributeRepository.findGroupName(id);
+
+		return groupName;
 	}
 }
 
