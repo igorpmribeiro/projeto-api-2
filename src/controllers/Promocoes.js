@@ -6,7 +6,7 @@ class PromocoesController {
 		this.IPromocoesService = new PromocoesService();
 		this.IPromotionValidator = new PromotionValidator();
 	}
-	async createPromotion(req, res, next) {
+	createPromotion = async (req, res, next) => {
 		const promotionData = req.body;
 		try {
 			const validationResult = this.IPromotionValidator.validate(promotionData);
@@ -18,18 +18,18 @@ class PromocoesController {
 		} catch (error) {
 			next(error);
 		}
-	}
+	};
 
-	async getPromotions(req, res, next) {
+	getPromotions = async (req, res, next) => {
 		try {
 			const promotions = await this.IPromocoesService.getPromotions();
 			res.status(200).json(promotions);
 		} catch (error) {
 			next(error);
 		}
-	}
+	};
 
-	async getPromotionById(req, res, next) {
+	getPromotionById = async (req, res, next) => {
 		const { id } = req.params;
 		try {
 			const promotion = await this.IPromocoesService.getPromotionById(id);
@@ -40,7 +40,7 @@ class PromocoesController {
 		} catch (error) {
 			next(error);
 		}
-	}
+	};
 }
 
 export { PromocoesController };

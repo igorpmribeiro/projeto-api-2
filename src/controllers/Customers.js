@@ -6,7 +6,7 @@ class CustomersController {
 		this.ICustomerService = new CustomersService();
 		this.ICustomersValidator = new CustomersValidator();
 	}
-	async create(req, res, next) {
+	create = async (req, res, next) => {
 		try {
 			const validationResult = this.ICustomersValidator.validate(req.body);
 			if (!validationResult.isValid) {
@@ -17,9 +17,9 @@ class CustomersController {
 		} catch (error) {
 			return next(error);
 		}
-	}
+	};
 
-	async insertAddress(req, res, next) {
+	insertAddress = async (req, res, next) => {
 		try {
 			const { id } = req.params;
 			const addressValidationResult = this.ICustomersValidator.validateAddress(req.body);
@@ -31,19 +31,19 @@ class CustomersController {
 		} catch (error) {
 			return next(error);
 		}
-	}
+	};
 
-	async listAddress(req, res, next) {
+	listAddress = async (req, res, next) => {
 		try {
 			const { id } = req.params;
-			const addresses = await ICustomersService.listAddresses(id);
+			const addresses = await this.ICustomerService.listAddresses(id);
 			return res.status(200).json({ addresses });
 		} catch (error) {
 			return next(error);
 		}
-	}
+	};
 
-	async update(req, res, next) {
+	update = async (req, res, next) => {
 		try {
 			const { id } = req.params;
 			// Para update, validamos apenas os campos presentes na requisição
@@ -67,11 +67,10 @@ class CustomersController {
 		} catch (error) {
 			return next(error);
 		}
-	}
+	};
 
-	async createGroup(req, res, next) {
+	createGroup = async (req, res, next) => {
 		try {
-			// Validações básicas para group
 			const group = {
 				name: req.body.name,
 				discount: req.body.discount,
@@ -97,7 +96,7 @@ class CustomersController {
 		} catch (error) {
 			return next(error);
 		}
-	}
+	};
 }
 
 export { CustomersController };

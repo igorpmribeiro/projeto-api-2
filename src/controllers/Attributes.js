@@ -6,7 +6,7 @@ class AttributeController {
 		this.IAttributeService = new AttributeService();
 		this.attrValidator = new AttributeValidator();
 	}
-	async create(req, res, next) {
+	create = async (req, res, next) => {
 		try {
 			const validationResult = this.attrValidator.validate(req.body);
 			if (!validationResult.isValid) {
@@ -22,9 +22,9 @@ class AttributeController {
 			next(error);
 			res.status(500).json({ error: error.message });
 		}
-	}
+	};
 
-	async getGroups(req, res) {
+	getGroups = async (req, res) => {
 		try {
 			const groups = await this.IAttributeService.findGroups();
 			const groupsWithOptions = await Promise.all(
@@ -41,9 +41,9 @@ class AttributeController {
 		} catch (error) {
 			res.status(500).json({ error: error.message });
 		}
-	}
+	};
 
-	async findGroupValues(req, res) {
+	findGroupValues = async (req, res) => {
 		try {
 			const groupId = req.params.id;
 			const groupName = await this.IAttributeService.findGroupName(groupId);
@@ -57,7 +57,7 @@ class AttributeController {
 		} catch (err) {
 			res.status(500).json({ error: err.message });
 		}
-	}
+	};
 }
 
 export { AttributeController };

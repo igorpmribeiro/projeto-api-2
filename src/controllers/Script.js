@@ -4,7 +4,7 @@ class ScriptController {
 	constructor() {
 		this.IScriptService = new ScriptService();
 	}
-	async createScript(req, res) {
+	createScript = async (req, res) => {
 		try {
 			const script = req.body;
 			const cupom = await this.IScriptService.createScript(script);
@@ -12,9 +12,9 @@ class ScriptController {
 		} catch (error) {
 			res.status(500).json({ error: `Internal message error ${error.message}` });
 		}
-	}
+	};
 
-	async getScriptById(req, res) {
+	getScriptById = async (req, res) => {
 		try {
 			const { id } = req.params;
 			const script = await this.IScriptService.getScriptById(id);
@@ -25,18 +25,18 @@ class ScriptController {
 		} catch (error) {
 			res.status(500).json({ error: `Internal message error ${error.message}` });
 		}
-	}
+	};
 
-	async getAllScripts(req, res) {
+	getAllScripts = async (req, res) => {
 		try {
 			const scripts = await this.IScriptService.getAllScripts();
 			res.status(200).json({ scripts: scripts });
 		} catch (error) {
 			res.status(500).json({ error: `Internal message error ${error.message}` });
 		}
-	}
+	};
 
-	async deleteScript(req, res) {
+	deleteScript = async (req, res) => {
 		try {
 			const { id } = req.params;
 			const deleted = await this.IScriptService.deleteScript(id);
@@ -44,7 +44,7 @@ class ScriptController {
 		} catch (error) {
 			res.status(500).json({ error: `Internal message error ${error.message}` });
 		}
-	}
+	};
 }
 
 export { ScriptController };

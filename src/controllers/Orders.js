@@ -6,7 +6,7 @@ class OrdersController {
 		this.IOrdersService = new OrdersService();
 		this.IOrdersValidator = new OrderValidator();
 	}
-	async createOrder(req, res, next) {
+	createOrder = async (req, res, next) => {
 		try {
 			const validationErrors = this.IOrdersValidator.validate(req.body);
 			if (validationErrors) {
@@ -18,9 +18,9 @@ class OrdersController {
 			next(error);
 			return res.status(500).json({ error: error.message });
 		}
-	}
+	};
 
-	async listOrders(req, res, next) {
+	listOrders = async (req, res, next) => {
 		try {
 			// Obtém o número da página do header da requisição
 			const page = req.headers.page || 1;
@@ -43,9 +43,9 @@ class OrdersController {
 			next(error);
 			return res.status(500).json({ error: error.message });
 		}
-	}
+	};
 
-	async getOrders(req, res, next) {
+	getOrders = async (req, res, next) => {
 		try {
 			const id = req.params.id;
 			if (!id) {
@@ -60,9 +60,9 @@ class OrdersController {
 			next(error);
 			return res.status(500).json({ error: error.message });
 		}
-	}
+	};
 
-	async updateOrder(req, res, next) {
+	updateOrder = async (req, res, next) => {
 		const id = req.params.id;
 		if (!id) {
 			return res.status(400).json({ error: 'Please provide an order ID' });
@@ -80,9 +80,9 @@ class OrdersController {
 			next(error);
 			return res.status(500).json({ error: error.message });
 		}
-	}
+	};
 
-	async cancelOrder(req, res, next) {
+	cancelOrder = async (req, res, next) => {
 		const id = req.params.id;
 		if (!id) {
 			return res.status(400).json({ error: 'Please provide an order ID' });
@@ -97,7 +97,7 @@ class OrdersController {
 			next(error);
 			return res.status(500).json({ error: error.message });
 		}
-	}
+	};
 }
 
 export { OrdersController };

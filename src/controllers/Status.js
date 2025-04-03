@@ -4,7 +4,7 @@ class StatusController {
 	constructor() {
 		this.IStatusService = new StatusService();
 	}
-	async getStatus(req, res, next) {
+	getStatus = async (req, res, next) => {
 		try {
 			const status = await this.IStatusService.getStatus();
 			res.status(200).json({ status: 200, result: [status] });
@@ -12,9 +12,9 @@ class StatusController {
 			next(error);
 			return res.status(500).json({ message: 'Internal server error' });
 		}
-	}
+	};
 
-	async createStatus(req, res, next) {
+	createStatus = async (req, res, next) => {
 		try {
 			const status = req.body;
 
@@ -24,9 +24,9 @@ class StatusController {
 			next(error);
 			return res.status(500).json({ message: 'Internal server error' });
 		}
-	}
+	};
 
-	async updateStatus(req, res, next) {
+	updateStatus = async (req, res, next) => {
 		try {
 			const { id } = req.params;
 			const status = req.body;
@@ -44,9 +44,9 @@ class StatusController {
 			next(error);
 			return res.status(500).json({ message: 'Internal server error' });
 		}
-	}
+	};
 
-	async deleteStatus(req, res, next) {
+	deleteStatus = async (req, res, next) => {
 		try {
 			const { id } = req.params;
 			if (!id) {
@@ -61,7 +61,7 @@ class StatusController {
 			next(error);
 			return res.status(500).json({ message: 'Internal server error' });
 		}
-	}
+	};
 }
 
 export { StatusController };

@@ -1,9 +1,11 @@
 import { ProductRepository } from '../repositories/Products.js';
 import { Product } from '../models/Product.js';
+import { CacheService } from './CacheService.js';
 
 class ProductService {
 	constructor() {
 		this.productRepository = new ProductRepository();
+		this.cacheService = new CacheService();
 	}
 
 	async create(productData) {
@@ -26,17 +28,20 @@ class ProductService {
 	}
 
 	async listAllProducts() {
-		try {
-			return await this.productRepository.listAllProducts();
-		} catch (error) {
-			throw new Error(`Erro ao listar produtos: ${error.message}`);
+		const cacheKey = 'allProducts';
+		const cachedProducts = await this.cacheService.get(cacheKey);
+		if (cachedProducts) {
+			return cachedProducts;
 		}
+
+		const products = await this.productRepository.listAllProducts();
+		await this.cacheService.set(cacheKey, products);
+		return products;
 	}
 
 	async updateProduct(id, product) {
 		try {
-			if (!id || !product)
-				throw new Error('ID ou dados do produto não fornecidos');
+			if (!id || !product) throw new Error('ID ou dados do produto não fornecidos');
 			return await this.productRepository.updateProduct(id, product);
 		} catch (error) {
 			throw new Error(`Erro ao atualizar produto: ${error.message}`);
@@ -45,8 +50,7 @@ class ProductService {
 
 	async updateProductPrice(id, price) {
 		try {
-			if (!id || price === undefined)
-				throw new Error('ID ou preço não fornecidos');
+			if (!id || price === undefined) throw new Error('ID ou preço não fornecidos');
 			return await this.productRepository.updateProduct(id, { price });
 		} catch (error) {
 			throw new Error(`Erro ao atualizar preço: ${error.message}`);
@@ -64,8 +68,7 @@ class ProductService {
 
 	async updateProductStock(id, quantity) {
 		try {
-			if (!id || quantity === undefined)
-				throw new Error('ID ou quantidade não fornecidos');
+			if (!id || quantity === undefined) throw new Error('ID ou quantidade não fornecidos');
 			return await this.productRepository.updateProduct(id, { quantity });
 		} catch (error) {
 			throw new Error(`Erro ao atualizar estoque: ${error.message}`);

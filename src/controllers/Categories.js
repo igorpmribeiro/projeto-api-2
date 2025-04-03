@@ -6,7 +6,7 @@ class CategoryController {
 		this.ICategoryService = new CategoryService();
 		this.ICategoryValidator = new CategoryValidator();
 	}
-	async create(req, res) {
+	create = async (req, res) => {
 		try {
 			const validationResult = this.ICategoryValidator.validate(req.body);
 			if (!validationResult.isValid) {
@@ -24,9 +24,9 @@ class CategoryController {
 		} catch (error) {
 			res.status(500).json({ error: error.message });
 		}
-	}
+	};
 
-	async findById(req, res) {
+	findById = async (req, res) => {
 		try {
 			const category = await this.ICategoryService.findById(req.params.id);
 
@@ -37,9 +37,9 @@ class CategoryController {
 		} catch (error) {
 			res.status(500).json({ error: error.message });
 		}
-	}
+	};
 
-	async updateCategory(req, res) {
+	updateCategory = async (req, res) => {
 		try {
 			const updatedCategory = await this.ICategoryService.updateCategory(req.params.id, req.body);
 
@@ -47,9 +47,9 @@ class CategoryController {
 		} catch (error) {
 			res.status(500).json({ error: error.message });
 		}
-	}
+	};
 
-	async listAllCategories(req, res) {
+	listAllCategories = async (req, res) => {
 		try {
 			const categories = await this.ICategoryService.listAllCategories();
 			res.status(200).json({
@@ -62,7 +62,7 @@ class CategoryController {
 				error: error.message,
 			});
 		}
-	}
+	};
 }
 
 export { CategoryController };

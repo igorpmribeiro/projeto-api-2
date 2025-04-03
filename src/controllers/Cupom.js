@@ -4,7 +4,7 @@ class CupomController {
 	constructor() {
 		this.ICupomServices = new CupomServices();
 	}
-	async createCupom(req, res, next) {
+	createCupom = async (req, res, next) => {
 		try {
 			const cupomData = req.body;
 			const createdCupom = await this.ICupomServices.createCupom(cupomData);
@@ -12,9 +12,9 @@ class CupomController {
 		} catch (error) {
 			next(error);
 		}
-	}
+	};
 
-	async getCoupons(req, res, next) {
+	getCoupons = async (req, res, next) => {
 		try {
 			const coupons = await this.ICupomServices.getCoupons();
 			if (coupons.length === 0) {
@@ -27,7 +27,7 @@ class CupomController {
 			next(error);
 			res.status(500).json({ message: 'Error retrieving coupons' });
 		}
-	}
+	};
 }
 
 export { CupomController };

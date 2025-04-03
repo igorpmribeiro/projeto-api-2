@@ -4,7 +4,7 @@ class WebhookController {
 	constructor() {
 		this.IWebhookService = new WebhookService();
 	}
-	async createWebhook(req, res, next) {
+	createWebhook = async (req, res, next) => {
 		try {
 			const webhook = await this.IWebhookService.createWebhook(req.body);
 			if (!webhook) {
@@ -14,9 +14,9 @@ class WebhookController {
 		} catch (error) {
 			next(error);
 		}
-	}
+	};
 
-	async getAllWebhooks(req, res, next) {
+	getAllWebhooks = async (req, res, next) => {
 		try {
 			const webhooks = await this.IWebhookService.getAllWebhooks();
 			if (!webhooks) {
@@ -26,9 +26,9 @@ class WebhookController {
 		} catch (error) {
 			next(error);
 		}
-	}
+	};
 
-	async deleteWebhook(req, res, next) {
+	deleteWebhook = async (req, res, next) => {
 		try {
 			const { id } = req.params;
 			const deletedWebhook = await this.IWebhookService.deleteWebhook(id);
@@ -39,7 +39,7 @@ class WebhookController {
 		} catch (error) {
 			next(error);
 		}
-	}
+	};
 }
 
 export { WebhookController };

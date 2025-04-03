@@ -4,7 +4,7 @@ class FabricantesController {
 	constructor() {
 		this.IFabricanteService = new FabricantesService();
 	}
-	async createFabricante(req, res, next) {
+	createFabricante = async (req, res, next) => {
 		try {
 			const fabricanteData = req.body;
 			const newFabricante = await this.IFabricanteService.createFabricante(fabricanteData);
@@ -13,9 +13,9 @@ class FabricantesController {
 			res.status(500).json({ message: `Internal server error: ${error.message}` });
 			next(error);
 		}
-	}
+	};
 
-	async getFabricantes(req, res, next) {
+	getFabricantes = async (req, res, next) => {
 		try {
 			const fabricantes = await this.IFabricanteService.getFabricantes();
 			res.status(200).json(fabricantes);
@@ -23,9 +23,9 @@ class FabricantesController {
 			res.status(500).json({ message: `Internal server error: ${error.message}` });
 			next(error);
 		}
-	}
+	};
 
-	async updateFabricantes(req, res, next) {
+	updateFabricantes = async (req, res, next) => {
 		try {
 			const { id } = req.params;
 			const fabricanteData = req.body;
@@ -38,7 +38,7 @@ class FabricantesController {
 			res.status(500).json({ message: `Internal server error: ${error.message}` });
 			next(error);
 		}
-	}
+	};
 }
 
 export { FabricantesController };
