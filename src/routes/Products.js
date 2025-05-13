@@ -13,6 +13,7 @@ productRouter.patch('/update/:id/price', productController.updateProductPrice);
 productRouter.patch('/update/:id/stock', productController.updateProductStock);
 productRouter.get('/:id/stock', productController.checkProductStock);
 productRouter.get('/:id/price', productController.checkProductPrice);
+productRouter.get('/:id/attributes', productController.getProductAttributes)
 productRouter.put('/:id/attribute/insert', productController.insertAttribute);
 
 export { productRouter };

@@ -155,10 +155,11 @@ class ProductRepository {
 	}
 
 	async getProductAttributes(productIds) {
-		const attributes = await db('products_attributes')
-			.whereIn('products_id', productIds)
-			.select('*');
-		return attributes;
+		const productAttributes = await db('products_attributes')
+			.where('products_id', productIds)
+			.select('products_options_id', 'paid', 'paprecodiff', 'papreco', 'papesodiff',
+				'papeso', 'paestoque', 'pacodref', 'paoptionsids')
+		return productAttributes;
 	}
 }
 

@@ -1,8 +1,10 @@
 import { ProductService } from '../services/Products.js';
 import { ProductValidator } from '../validators/Products.js';
+import {AttributeService} from "../services/Attributes.js";
 
 class ProductController {
 	constructor() {
+		this.IAttributeService = new AttributeService();
 		this.IProductService = new ProductService();
 		this.IProductValidator = new ProductValidator();
 	}
@@ -96,7 +98,7 @@ class ProductController {
 			const stock = await this.IProductService.checkProductStock(req.params.id);
 			res.status(200).json({ id: req.params.id, stock: stock });
 		} catch (error) {
-			next(error);
+			next(error)
 		}
 	};
 
@@ -112,7 +114,13 @@ class ProductController {
 	getProductAttributes = async (req, res, next) => {
 		try {
 			const attributes = await this.IProductService.getProductAttributes(req.params.id);
-			res.status(200).json({ id: req.params.id, attributes: attributes });
+
+			if (!attributes || attributes.length === 0) {
+				return res.status(404).json({ status: 404, message: 'No attributes found for this product' });
+			}
+
+
+			res.status(200).json({ status: 200, totalCount: attributes.length, result: attributes  });
 		} catch (error) {
 			next(error);
 		}
