@@ -49,7 +49,7 @@ class CategoryController {
 		}
 	};
 
-	listAllCategories = async (req, res) => {
+	listAllCategories = async (req, res, next) => {
 		try {
 			const categories = await this.ICategoryService.listAllCategories();
 			res.status(200).json({
@@ -61,6 +61,7 @@ class CategoryController {
 				status: 500,
 				error: error.message,
 			});
+			next(error);
 		}
 	};
 }

@@ -1,9 +1,11 @@
 import { CategoryRepository } from '../repositories/Categories.js';
 import { Category } from '../models/Category.js';
+import {CacheService} from "./CacheService.js";
 
 class CategoryService {
 	constructor() {
 		this.categoryRepository = new CategoryRepository();
+		this.cacheService = new CacheService();
 	}
 
 	async create(categoryData) {
@@ -32,8 +34,21 @@ class CategoryService {
 	}
 
 	async listAllCategories() {
-		const categories = await this.categoryRepository.listAllCategories();
-		return categories;
+		const cacheKey = 'categories';
+		const cachedCategories = await this.cacheService.get(cacheKey);
+		if (cachedCategories) {
+			return cachedCategories;
+		}
+
+		try {
+			const categories = await this.categoryRepository.listAllCategories();
+			if (categories.length > 0) {
+				await this.cacheService.set(cacheKey, categories);
+			}
+			return categories;
+		} catch (error) {
+			throw new Error('Failed to fetch categories');
+		}
 	}
 }
 
