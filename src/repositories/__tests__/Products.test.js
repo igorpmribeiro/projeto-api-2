@@ -26,7 +26,7 @@ describe('ProductRepository', () => {
 			quantity: 5,
 			description_full: 'Descrição teste',
 			codref: 'COD123',
-			images: [],
+			images: ['https://example.com/image1.jpg'],
 			dimensions: [],
 			categories: [],
 			attributes: [],

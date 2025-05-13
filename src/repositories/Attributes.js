@@ -40,7 +40,7 @@ class AttributeRepository {
 	async findGroupName(groupId) {
 		const group = await db('attributes').where('id', groupId).select('group_name').first();
 		if (!group) {
-			throw new Error('Grupo n√£o encontrado');
+			throw new Error('Grupo n„o encontrado');
 		}
 		return group.group_name;
 	}
