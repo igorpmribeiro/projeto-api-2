@@ -33,10 +33,13 @@ class ProductService {
 		if (cachedProducts) {
 			return cachedProducts;
 		}
-
-		const products = await this.productRepository.listAllProducts();
-		await this.cacheService.set(cacheKey, products);
-		return products;
+		try {
+			const products = await this.productRepository.listAllProducts();
+			await this.cacheService.set(cacheKey, products);
+			return products;
+		} catch (error) {
+			throw new Error(`Erro ao listar produtos: ${error.message}`);
+		}
 	}
 
 	async updateProduct(id, product) {
@@ -94,6 +97,11 @@ class ProductService {
 	}
 
 	async getProductAttributes(id) {
+		const cacheKey = `productAttributes:${id}`;
+		const cachedAttributes = await this.cacheService.get(cacheKey);
+		if (cachedAttributes) {
+			return cachedAttributes;
+		}
 		try {
 			if (!id) throw new Error('ID não fornecido');
 			return await this.productRepository.getProductAttributes(id);

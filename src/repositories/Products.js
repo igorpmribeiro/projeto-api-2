@@ -135,7 +135,7 @@ class ProductRepository {
 
 		const attributeToSave = {
 			products_id: id,
-			products_options_id: product.attrGroupId,
+			products_options_id: product.attrGroupId ? product.attrGroupId : attribute.optionsGroupId,
 			paativo: 1,
 			padefault: attribute.isDefault || 0,
 			paprecodiff: attribute.priceDiff || '',
@@ -154,13 +154,50 @@ class ProductRepository {
 		return attributeToSave;
 	}
 
-	async getProductAttributes(productIds) {
-		const productAttributes = await db('products_attributes')
-			.where('products_id', productIds)
-			.select('products_options_id', 'paid', 'paprecodiff', 'papreco', 'papesodiff',
-				'papeso', 'paestoque', 'pacodref', 'paoptionsids')
-		return productAttributes;
+	async getProductAttributes(productId) {
+		const productAttributesResult = await db('products_attributes')
+			.where('products_id', productId)
+			.select('paid', 'pacodref', 'paimagem', 'paoptionsids', 'paestoque', 'padefault', 'padimensions');
+
+		const formattedAttributes = await Promise.all(
+			productAttributesResult.map(async (attribute) => {
+				const optionIds = JSON.parse(attribute.paoptionsids || '[]');
+				let poidsDetails = [];
+
+				if (optionIds && optionIds.length > 0) {
+					poidsDetails = await db('attribute_options')
+						.whereIn('id', optionIds)
+						.select('id', 'name', 'value');
+				}
+
+				let parsedDimensions;
+				if (attribute.padimensions === null) {
+					parsedDimensions = false;
+				} else {
+					parsedDimensions = JSON.parse(attribute.padimensions);
+				}
+				const parsedImage = JSON.parse(attribute.paimagem || '""');
+
+				return {
+					id: attribute.paid,
+					status: true,
+					codref: attribute.pacodref,
+					quantity: attribute.paestoque,
+					image: parsedImage,
+					isDefault: !!attribute.padefault,
+					poids: poidsDetails.map(option => ({
+						id: option.id,
+						name: option.name,
+						value: option.value,
+					})),
+					dimensions: parsedDimensions,
+				};
+			}),
+		);
+
+		return formattedAttributes;
 	}
+
 }
 
 export { ProductRepository };

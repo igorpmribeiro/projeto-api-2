@@ -1,10 +1,8 @@
 import { ProductService } from '../services/Products.js';
 import { ProductValidator } from '../validators/Products.js';
-import {AttributeService} from "../services/Attributes.js";
 
 class ProductController {
 	constructor() {
-		this.IAttributeService = new AttributeService();
 		this.IProductService = new ProductService();
 		this.IProductValidator = new ProductValidator();
 	}
