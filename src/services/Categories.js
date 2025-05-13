@@ -8,7 +8,7 @@ class CategoryService {
 		this.cacheService = new CacheService();
 	}
 
-	async create(categoryData) {
+	async cre(categoryData) {
 		const category = new Category(categoryData);
 		const id = await this.categoryRepository.create(category);
 		return id;
