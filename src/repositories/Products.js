@@ -2,8 +2,7 @@ import { db } from '../config/knexfile.js';
 
 class ProductRepository {
 	async create(product) {
-		const { categories, attributes, images, dimensions, ...productData } =
-			product;
+		const { categories, attributes, images, dimensions, ...productData } = product;
 
 		try {
 			const [id] = await db('products').insert({
@@ -55,12 +54,7 @@ class ProductRepository {
 
 		if (product) {
 			const categories = await db('products_categories')
-				.join(
-					'categories',
-					'products_categories.categories_id',
-					'=',
-					'categories.id',
-				)
+				.join('categories', 'products_categories.categories_id', '=', 'categories.id')
 				.where({ 'products_categories.products_id': id })
 				.select('categories.id', 'categories.name', 'categories.parent_id');
 
@@ -98,33 +92,23 @@ class ProductRepository {
 			name: product.name ?? currentProduct.name,
 			price: product.price ?? currentProduct.price,
 			quantity: product.quantity ?? currentProduct.quantity,
-			description: product.description ?? currentProduct.description,
+			description_full: product.description_full ?? currentProduct.description_full,
 			codref: product.codref ?? currentProduct.codref,
-			categories: product.categories ?? currentProduct.categories,
 		};
 
-		await db('products')
-			.where({ id })
-			.update({
-				...updatedProduct,
-				categories: JSON.stringify(updatedProduct.categories),
-			});
+		await db('products').where({ id }).update(updatedProduct);
 
 		return updatedProduct;
 	}
 
 	async checkProductStock(id) {
 		const product = await this.findById(id);
-		return product
-			? product.quantity
-			: 'Produto não encontrado, verifique o ID do produto';
+		return product ? product.quantity : 'Produto não encontrado, verifique o ID do produto';
 	}
 
 	async checkProductPrice(id) {
 		const product = await this.findById(id);
-		return product
-			? product.price
-			: 'Produto não encontrado, verifique o ID do produto';
+		return product ? product.price : 'Produto não encontrado, verifique o ID do produto';
 	}
 
 	async insertAttribute(id, attribute) {
@@ -155,9 +139,7 @@ class ProductRepository {
 	}
 
 	async getProductAttributes(productId) {
-		const productAttributesResult = await db('products_attributes')
-			.where('products_id', productId)
-			.select('paid', 'pacodref', 'paimagem', 'paoptionsids', 'paestoque', 'padefault', 'padimensions');
+		const productAttributesResult = await db('products_attributes').where('products_id', productId).select('paid', 'pacodref', 'paimagem', 'paoptionsids', 'paestoque', 'padefault', 'padimensions');
 
 		const formattedAttributes = await Promise.all(
 			productAttributesResult.map(async (attribute) => {
@@ -165,9 +147,7 @@ class ProductRepository {
 				let poidsDetails = [];
 
 				if (optionIds && optionIds.length > 0) {
-					poidsDetails = await db('attribute_options')
-						.whereIn('id', optionIds)
-						.select('id', 'name', 'value');
+					poidsDetails = await db('attribute_options').whereIn('id', optionIds).select('id', 'name', 'value');
 				}
 
 				let parsedDimensions;
@@ -185,7 +165,7 @@ class ProductRepository {
 					quantity: attribute.paestoque,
 					image: parsedImage,
 					isDefault: !!attribute.padefault,
-					poids: poidsDetails.map(option => ({
+					poids: poidsDetails.map((option) => ({
 						id: option.id,
 						name: option.name,
 						value: option.value,
@@ -197,7 +177,6 @@ class ProductRepository {
 
 		return formattedAttributes;
 	}
-
 }
 
 export { ProductRepository };
