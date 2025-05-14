@@ -1,6 +1,6 @@
 import { CategoryRepository } from '../repositories/Categories.js';
 import { Category } from '../models/Category.js';
-import {CacheService} from "./CacheService.js";
+import { CacheService } from './CacheService.js';
 
 class CategoryService {
 	constructor() {
@@ -8,7 +8,7 @@ class CategoryService {
 		this.cacheService = new CacheService();
 	}
 
-	async cre(categoryData) {
+	async create(categoryData) {
 		const category = new Category(categoryData);
 		const id = await this.categoryRepository.create(category);
 		return id;
@@ -27,7 +27,7 @@ class CategoryService {
 
 		const updatedCategory = new Category({
 			...currentCategory,
-			...categoryData
+			...categoryData,
 		});
 
 		return this.categoryRepository.update(id, updatedCategory);

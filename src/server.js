@@ -11,7 +11,6 @@ import { webhookRouter } from './routes/Webhooks.js';
 import { fabricantesRouter } from './routes/Fabricantes.js';
 import { promocoesRouter } from './routes/Promocoes.js';
 import { statusRouter } from './routes/Status.js';
-import errorRouter from './routes/test.js';
 
 const app = express();
 app.use(express.json());
@@ -28,18 +27,13 @@ app.use('/ws/v2/webhooks', webhookRouter);
 app.use('/ws/v2/fabricantes', fabricantesRouter);
 app.use('/ws/v2/promotions', promocoesRouter);
 app.use('/ws/v2/status', statusRouter);
-// app.use('/ws/v2/test', errorRouter);
 
 // Improved error handling middleware
 app.use((err, req, res, next) => {
 	// Log error to Rollbar
 	rollbar.error(err, (rollbarErr, uuid) => {
 		// Check if error is validation related (typically 400 status)
-		if (
-			err.message &&
-			(err.message.includes('Dados inválidos') ||
-				err.message.includes('obrigatório'))
-		) {
+		if (err.message && (err.message.includes('Dados inválidos') || err.message.includes('obrigatório'))) {
 			return res.status(400).json({
 				error: err.message,
 				uuid: uuid,
