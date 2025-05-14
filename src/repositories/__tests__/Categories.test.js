@@ -13,6 +13,7 @@ describe('CategoryRepository', () => {
 	});
 
 	it('should insert a new category', async () => {
+		await db('categories').del(); // Limpa a tabela antes do teste
 		const category = {
 			name: 'Categoria para Teste',
 			subtitle: 'Subtítulo para Teste',
@@ -45,8 +46,17 @@ describe('CategoryRepository', () => {
 	});
 
 	it('should return category data', async () => {
-		const getCategory = await categoryRepository.findById(32);
-		expect(getCategory).toHaveProperty('id', 32);
-		expect(getCategory).toHaveProperty('name', 'Produtos para Casa');
+		const category = {
+			name: 'Categoria para Buscar',
+			subtitle: 'Subtítulo para Buscar',
+			hidden: false,
+			discount: 0,
+		};
+
+		const id = await categoryRepository.create(category);
+		const foundCategory = await categoryRepository.findById(id);
+
+		expect(foundCategory).toHaveProperty('id', id);
+		expect(foundCategory).toHaveProperty('name', 'Categoria para Buscar');
 	});
 });
